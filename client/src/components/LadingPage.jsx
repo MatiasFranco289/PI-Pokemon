@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 export default function LandingPage(){
     return(
         <div className = {styles.globalWrapper}>
-           <div className = {styles.backgroundImg}></div>
+           {/* <div className = {styles.backgroundImg}></div> */}
            <div className = {styles.mainWrapper}>
-                <div className = {styles.subContainer1}>
+                <div className = {styles.subContainer}>
                     <h1>Pokemons!</h1>
                     <hr />
                     <h3>Busca Pokemons en nuestra pagina y si no lo encontras...</h3>
@@ -19,7 +19,7 @@ export default function LandingPage(){
                     </div>
                 </div>
 
-                <div className = {styles.subContainer2}>
+                <div className = {styles.subContainer}>
                    <img src = {snorlaxImg} alt="" />
                 </div>
            </div>

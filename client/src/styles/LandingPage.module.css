@@ -1,29 +1,24 @@
 .globalWrapper{
     background-color: rgb(255, 89, 29);
     width: 100vw;
-    height: 100vh;
-}
-
-
-.backgroundImg{
-    background-image: url(../imgs/LandingPageBackground.jpg);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    opacity: .07;
+    min-height: 100vh;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url(../imgs/LandingPageBackground02.png);
+    background-repeat: repeat;
     animation: backgroundImgInit;
-    animation-duration: 1.5s;
-    animation-timing-function: ease-out;
+    animation-duration: 1s;
 }
 
 @keyframes backgroundImgInit{
-    from{ opacity: .5;}
-    to{ opacity: .07;}
+    from{ background-image: url(../imgs/LandingPageBackground01.png);}
+    to{ background-image: url(../imgs/LandingPageBackground02.png);}
 }
 
 .globalWrapper h1{
     color: white;
-    font-size: 4em;
+    font-size: 4rem;
     text-decoration: overline;
 }
 
@@ -55,7 +50,7 @@
 
 .globalWrapper h3{
     font-weight: 200;
-    font-size: 1.5em;
+    font-size: 1.5rem;
 }
 
 .globalWrapper hr{
@@ -67,53 +62,86 @@
 
 .mainWrapper{
     background-color: rgba(255,255,255,.2);
-/*     width: 1150px;
-    height: 650px; */
-    width: auto;
+    width: 60%;
+    height: fit-content;
     border-radius: 5px;
     box-shadow: 10px 10px 20px 10px rgba(0, 0, 0, 0.4);
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 2%;
     z-index: 1;
     backdrop-filter: blur(5px);
     transition: 1s;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
     animation: mainWrapperStart;
     animation-duration: 1s;
     animation-timing-function: ease-out;
+    animation-direction: reverse;
+    justify-content: space-around;
+    margin-bottom: 40px;
+    margin-top: 40px;
 }
 
 .mainWrapper:hover{
-    width: 1200px;
-    height: 700px;
     box-shadow: 10px 10px 20px 20px rgba(0, 0, 0, 0.4);
-    transform: 1s;
+    transform: scale(1.1);
+    transition: 1s;
 }
+ 
 
 @keyframes mainWrapperStart{
-    from {transform: translate(-50%,-200%);
-          opacity: 0;}
-    to {transform: translate(-50%,-50%);
-        opacity: 1;}
+    from {opacity: 1;
+          transform: scale(1);
+          border-radius:5px;}
+    to {opacity: 0;
+        transform: scale(.1);
+        border-radius: 50%;}
 }
 
-.subContainer1{
+.subContainer{
     color: white;
-    width: 40%;
+    width: 500px;
 }
 
-.subContainer2{
-    color: white;
-    width: 60%;
-}
 
 .btnContainer{
     display: flex;
     justify-content: center;
+}
+
+@media (max-width: 1201px){
+    .subContainer{
+        width: 350px;
+    }
+
+    .globalWrapper h1{
+        font-size: 3rem;
+    }
+
+    .globalWrapper h3{
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 769px){
+    .mainWrapper{
+        flex-wrap: wrap-reverse;
+        padding: 3%;
+    }
+
+}
+
+@media(max-width: 480px){
+    .subContainer{
+        width: 200px;
+    }
+
+    .mainWrapper h1{
+        font-size: 2rem;
+    }
+
+    .linkBtn {
+        font-size: 1rem;
+    }
+
 }
 
