@@ -1,0 +1,119 @@
+.globalWrapper{
+    background-color: rgb(255, 89, 29);
+    width: 100vw;
+    height: 100vh;
+}
+
+
+.backgroundImg{
+    background-image: url(../imgs/LandingPageBackground.jpg);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    opacity: .07;
+    animation: backgroundImgInit;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+}
+
+@keyframes backgroundImgInit{
+    from{ opacity: .5;}
+    to{ opacity: .07;}
+}
+
+.globalWrapper h1{
+    color: white;
+    font-size: 4em;
+    text-decoration: overline;
+}
+
+.linkBtn{
+    background-color: yellow;
+    border: none;
+    width: 40%;
+    font-size: 1.5em;
+    padding: 2%;
+    box-shadow: 5px 5px 8px 1px rgba(0, 0, 0, 0.4);
+    color: black;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bolder;
+    transition: .5s;
+    text-align: center;
+    text-decoration: none;
+}
+
+.linkBtn:hover{
+    width: 50%;
+    color: white;
+    background-color: orange;
+    transition: .5s;
+}
+
+.globalWrapper img{
+    width: 100%;
+}
+
+.globalWrapper h3{
+    font-weight: 200;
+    font-size: 1.5em;
+}
+
+.globalWrapper hr{
+    color: white;
+    background-color: white;
+    height: 4px;
+    border-color: white;
+}
+
+.mainWrapper{
+    background-color: rgba(255,255,255,.2);
+/*     width: 1150px;
+    height: 650px; */
+    width: auto;
+    border-radius: 5px;
+    box-shadow: 10px 10px 20px 10px rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2%;
+    z-index: 1;
+    backdrop-filter: blur(5px);
+    transition: 1s;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    animation: mainWrapperStart;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+}
+
+.mainWrapper:hover{
+    width: 1200px;
+    height: 700px;
+    box-shadow: 10px 10px 20px 20px rgba(0, 0, 0, 0.4);
+    transform: 1s;
+}
+
+@keyframes mainWrapperStart{
+    from {transform: translate(-50%,-200%);
+          opacity: 0;}
+    to {transform: translate(-50%,-50%);
+        opacity: 1;}
+}
+
+.subContainer1{
+    color: white;
+    width: 40%;
+}
+
+.subContainer2{
+    color: white;
+    width: 60%;
+}
+
+.btnContainer{
+    display: flex;
+    justify-content: center;
+}
+
