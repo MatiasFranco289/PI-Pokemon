@@ -7,6 +7,7 @@ function App() {
   return (
     <Routes>
       <Route path='/' element = {<LandingPage/>}/>
+      <Route path='/home/:page' element = {<Home/>}/>
       <Route path='/home' element = {<Home/>}/>
     </Routes>
   );

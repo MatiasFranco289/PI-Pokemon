@@ -1,9 +1,11 @@
 .mainWrapper{
-    background-color: aquamarine;
+    background-color: rgba(255,255,255,.4);
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    flex:auto;
-    width: 80%;
+
 }
 
+.hiddenMainWrapper{
+    opacity: 0;
+}

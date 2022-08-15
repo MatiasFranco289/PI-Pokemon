@@ -2,15 +2,17 @@ import React from "react";
 import styles from '../styles/PokemonCard.module.css';
 
 export default function PokemonCard(props){
-    var types = props.types.join(', ');
+    let types = props.types.map(type => {return capitalizeFirstLetter(type)});
+    types = types.join(', ');
 
+    function capitalizeFirstLetter(str){
+        return str[0].toUpperCase() + str.slice(1);
+    }
     return (
         <div className = {styles.mainWrapper}>
-            <h2>{props.name}</h2>             
+            <h2>{capitalizeFirstLetter(props.name)}</h2>             
             <img src={props.img.src} alt={`${props.name}.jpg`}/>
-            <h4>Tipos: {types}</h4> 
-{/*             <p>{props.types[0]}</p>
-                     */}             
+            <h4>Tipos: {types}</h4>          
         </div>
     );
 }
