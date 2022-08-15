@@ -4,14 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
+//Redux shit
+import {Provider} from 'react-redux';//Esto es un componente que uso abajo fijate
+import store from '../src/store';//Esta es la store que cree en store/index.js
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App/>
-    </BrowserRouter>
-  </React.StrictMode>
+/*   <React.StrictMode> Esto te muestra mas informacion de los errores, sirve para development, lo saco por ahora porque hace que mis componentes se triggeren twice*/
+    <Provider store = {store}>{/* Esto deja disponible la store para todos los componentes de adentro*/}
+      <BrowserRouter>
+        <App/>
+      </BrowserRouter>
+    </Provider>
+/*   </React.StrictMode> */
 );
 
 // If you want to start measuring performance in your app, pass a function

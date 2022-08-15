@@ -1,0 +1,6 @@
+.mainWrapper{
+    background-color: aquamarine;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}

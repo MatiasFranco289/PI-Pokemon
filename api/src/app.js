@@ -1,4 +1,4 @@
-const express = require('express');
+{/* const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
@@ -32,4 +32,25 @@ server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   res.status(status).send(message);
 });
 
-module.exports = server;
+module.exports = server; */}
+
+//ESTO VA A SER LA API
+const express = require('express');
+const server = express();
+//Mis routes
+const Pokemons = require('./routes/Pokemons.js');
+
+//Esto es un middleware CORS, basicamente esta prohibido que una pagina cargue contenido de otra pero aca abajo le permito el acceso a las request que vengan desde
+//localhost:3001 para mas info leer https://www.ionos.es/digitalguide/paginas-web/desarrollo-web/cross-origin-resource-sharing/
+server.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3001'); // update to match the domain you will make the request from
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  next();
+});
+
+server.use(express.json());
+server.use('/pokemons', Pokemons);
+
+module.exports = server;//Aca lo exporto nomas, el server lo prendo en index
