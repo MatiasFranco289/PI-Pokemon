@@ -3,6 +3,7 @@ import styles from "../styles/Home.module.css";
 import Pokemons from './Pokemons';
 import NavigationBottomBar from './NavigationBottomBar';
 import {useParams} from 'react-router-dom';
+import Buscador from './Buscador';
 
 export default function Home(){
     let {page} = useParams();//Aca agarro el param /:page del link
@@ -11,6 +12,7 @@ export default function Home(){
     return(
         <div className = {styles.mainWrapper}>
             <h1>Soy Home</h1>
+            <Buscador/>
             <Pokemons page = {page}/>
             <NavigationBottomBar page = {page}/>
         </div>

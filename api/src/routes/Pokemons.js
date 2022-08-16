@@ -2,7 +2,9 @@ const {Router} = require('express');
 const router = Router();
 const axios = require('axios');
 
-router.get('/', async(req, res) => {
+router.get('/', async(req, res, next) => {
+    if(req.query.name) return next();//Si recibis por query un atributo {name}, segui para delante, aca no lo voy a manejar
+
     const {offset, limit, all} = req.query;
     const url = `https://pokeapi.co/api/v2/pokemon?offset=${!offset?0:offset}&limit=${!limit?40:limit}`;//Esto pide {limit} pokemons desde el pokemons numero {offset}
 
@@ -30,6 +32,33 @@ router.get('/', async(req, res) => {
     catch(err){
         res.status(404).send(`The following error has ocurred: ${err.message}`);
     }
+})
+
+ router.get('/', async (req, res) => {//Si recibe info por query entra aca, esto es un buscador de pokemons por nombre
+    const {name} = req.query;
+    const link = `https://pokeapi.co/api/v2/pokemon/${name}`;
+
+    try{
+        let {data} = await axios.get(link);
+        let pokemonFullInfo = {
+            name : data.name,
+            img: data.sprites.other.home.front_default,
+            types: data.types.map(types => {return types.type.name}),
+            id: data.id,
+            hp: data.stats[0].base_stat,
+            attack: data.stats[1].base_stat,
+            defense: data.stats[2].base_stat,
+            speed: data.stats[5].base_stat,
+            weight: data.weight,
+            height: data.height
+        };
+
+        res.status(200).json(pokemonFullInfo);
+    }
+    catch(err){
+        res.status(404).send(new Error(err.message));
+    }
+
 })
 
 module.exports = router;
