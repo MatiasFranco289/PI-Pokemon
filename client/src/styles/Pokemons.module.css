@@ -1,9 +1,14 @@
 .mainWrapper{
-    background-color: aquamarine;
+    background-color: rgba(255,255,255,.2);
+    box-shadow: 10px 10px 20px black;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    backdrop-filter: blur(5px);
+    border-radius: 5px;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
     flex:auto;
-    width: 80%;
+    width: 100%;
 }
 

@@ -5,19 +5,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     background-image: url(../imgs/LandingPageBackground02.png);
 }
 
 .pokemonCard{
     background-color: rgba(255,255,255,0.3);
+    margin-top: 190px;
+    margin-bottom: 10px;
     width: 500px;
     height: 600px;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     border-radius: 2%;
     box-shadow: 15px 15px 10px black;
-    margin-top: 200px;
     backdrop-filter: blur(5px);
     transition: 1s;
     animation: cardAppear;
@@ -34,7 +36,6 @@
 .pokemonCard:hover{
     box-shadow: 5px 5px 3px rgba(0,0,0,.9);
     transition: 1s;
-    backdrop-filter: blur(0px);
     transform: scale(.97);
 }
 
@@ -46,7 +47,7 @@
 .imgContainer img{
     width: 70%;
     position: relative;
-    top: -140%;
+    top: -130%;
 }
 
 .infoContainer{
@@ -55,7 +56,7 @@
     justify-content: center;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -112,8 +113,9 @@
     text-align: center;
     text-decoration: none;
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
+    cursor: pointer;
     animation: buttonAppear;
     animation-duration: 1s;
 }
@@ -128,4 +130,49 @@
     width: 250px;
     color: white;
     background-color: orange;
+}
+
+
+@media (max-width: 768px){
+    .pokemonCard{
+        width: 400px;
+        height: 500px;
+    }
+
+    .imgContainer img{
+        top: -140%;
+    }
+
+    .exitBtn{
+        font-size: 1.2em;
+        width: 180px;
+    }
+}
+
+@media (max-width: 480px){
+    .pokemonCard{
+        width: 250px;
+        height: 370px;
+    }
+
+    .pokemonCard h1{
+        font-size:1.5em;
+    }
+
+    .pokemonCard h4{
+        font-size: .85em;
+    }
+
+    .pokemonCard p{
+        font-size: .8em;
+    }
+
+    .imgContainer img{
+        width: 80%;
+    }
+
+    .exitBtn{
+        font-size: 1em;
+        width: 150px;
+    }
 }

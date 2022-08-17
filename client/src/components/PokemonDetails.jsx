@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from 'react-router-dom';
 import styles from '../styles/PokemonDetails.module.css';
-import {Link} from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 
 export default function PokemonDetails(){
@@ -14,7 +13,7 @@ export default function PokemonDetails(){
         .then(data => data.json())
         .then(response => setPokemonInfo(response))
         .catch(err => console.error(err));
-    },[])
+    }, []);
 
     function showPokemonInfo(){
         let types = pokemonInfo.types;
@@ -87,11 +86,12 @@ export default function PokemonDetails(){
 
     return(
         <div className = {styles.mainWrapper}>
+            {!pokemonInfo?null:
+                <button onClick ={() => navigate(-1)} className = {styles.exitBtn}>Go back</button>
+            }
+            
             {!pokemonInfo?<p>Cargando...</p>:
             showPokemonInfo()}
-
-            {!pokemonInfo?null:<button onClick ={() => navigate(-1)} className = {styles.exitBtn}>Go back</button>}
-        
         </div>
     )
 }

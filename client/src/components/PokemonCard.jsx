@@ -1,7 +1,9 @@
 import React from "react";
 import styles from '../styles/PokemonCard.module.css';
+import {Link} from 'react-router-dom';
 
 export default function PokemonCard(props){
+    const url = `/pokemonDetails/${props.name}`
     let types = props.types.map(type => {return capitalizeFirstLetter(type)});
     types = types.join(', ');
 
@@ -9,10 +11,13 @@ export default function PokemonCard(props){
         return str[0].toUpperCase() + str.slice(1);
     }
     return (
-        <div className = {styles.mainWrapper}>
-            <h2>{capitalizeFirstLetter(props.name)}</h2>             
+        <Link to = {url} className = {styles.mainWrapper}>
+            <h2>{capitalizeFirstLetter(props.name)}</h2>        
             <img src={props.img.src} alt={`${props.name}.jpg`}/>
-            <h4>Tipos: {types}</h4>          
-        </div>
+
+            <div className = {styles.stripeBottom}>
+                <h4>Tipos: {types}</h4> 
+            </div>         
+        </Link>
     );
 }
