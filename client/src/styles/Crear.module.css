@@ -1,0 +1,174 @@
+.mainWrapper{
+    background-image: url('../imgs/LandingPageBackground02.png');
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px;
+    color: rgb(31, 31, 31);
+}
+
+.mainWrapper label{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 600;
+
+}
+
+.mainWrapper input{
+    height: 30px;
+    border-radius: 5px;
+    border-style: none;
+    padding-left: 1%;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 1.05em;
+}
+
+.mainWrapper input:focus{
+    outline: none;
+}
+
+.btnsContainer{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.btnsContainer button{
+    min-width: 50px;
+    min-height: 30px;
+}
+
+.btnsContainer button, .createBtn, .exitBtn{
+    background-color: yellow;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border-style: none;
+    font-weight: 600;
+    margin: 2px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.createBtn{
+    min-width: 30%;
+    min-height: 50px;
+    font-size: 1.3em;
+}
+
+
+.btnsContainer button:hover, .createBtn:hover, .exitBtn:hover{
+  transform: scale(1.1);
+  color: white;
+  background-color: orange;
+  transition: .3s;
+}
+
+
+
+.mainWrapper form{
+    width: 1000px;
+    background-color: rgba(255, 255, 255, .2);
+    backdrop-filter: blur(5px);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top:2%;
+    padding-bottom: 2%;
+    box-shadow: 0px 0px 20px black;
+    animation: appear;
+    animation-duration: 1s;
+    transition: 1s;
+}
+
+.mainWrapper form:hover{
+    background-color: rgba(255, 255, 255, .35);
+    transition: 1s;
+}
+
+@keyframes appear{
+    from{
+        opacity: 0;
+        border-radius: 50%;
+    }
+    to{
+        opacity: 1;
+    }
+}
+
+.mainSection{
+    width: 90%;
+    background-color: rgba(255, 255, 255, .2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 15px black;
+    margin-bottom: 4%;
+}
+
+.section{
+    background-color: rgba(255, 255, 255, .3);
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding: 1%;
+    border-radius: 5px;
+    width:90%;
+    box-shadow: 0px 0px 10px black;
+    color: rgb(48, 48, 48);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.titleContainer{
+    width: 1000px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, .3);
+    backdrop-filter: blur(5px);
+    box-shadow: 0px 0px 15px black;
+    margin-bottom: 2%;
+    border-radius: 5px;
+    color: rgb(48, 48, 48);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    animation: appear;
+    animation-duration: 1s;
+    margin-top: 70px;
+}
+
+.exitBtn{
+    position: absolute;
+    left: 0;
+    min-width: 200px;
+    min-height: 50px;
+    font-size: 1.3em;
+    animation: btnEnter;
+    animation-duration: 1.2s;
+}
+
+@keyframes btnEnter{
+    from {
+        transform: translateX(-100%);
+    }
+    to{
+        transform: translateX(0%);
+    }
+}
+
+.titleImg{
+    width: 30%;
+    position: fixed;
+    left: 0;
+    top: -9%;
+    animation: pikachuEnter;
+    animation-duration: 1s;
+}
+
+@keyframes pikachuEnter{
+    from{
+        top: -100%;
+    }
+}
+

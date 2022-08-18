@@ -8,3 +8,4 @@ export function getPokemons(offset, limit, all){//This should get all the 40 pok
         }))
     } 
 }
+

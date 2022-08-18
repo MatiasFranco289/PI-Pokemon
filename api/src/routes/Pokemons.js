@@ -58,7 +58,10 @@ router.get('/', async(req, res, next) => {
     catch(err){
         res.status(404).send(new Error(err.message));
     }
+})
 
+router.post('/', (req, res) => {
+    
 })
 
 module.exports = router;

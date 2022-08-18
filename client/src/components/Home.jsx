@@ -13,30 +13,34 @@ export default function Home(){
     let {page} = useParams();//Aca agarro el param /:page del link
     page = (!page || isNaN(page))?0:page;//Si no se paso ningun param o el param pasado no es un numero, por defecto sera 0
     const dispatch = useDispatch();
-    const pokemonsData = useSelector(store => store.pokemons);//Pido de la redux store la propiedad pokemons
+    const store = useSelector(store => store);//Aca agarro la store entera
     const [images, setImages] = useState();
+    
     const loadedPage = (
     <div className = {styles.homeMainContainer}>
         <Buscador/>
         <div className = {styles.homeMainContent}>
             <div className = {styles.filtersMain}>
-                <Filtros pokemons = {pokemonsData}/>
+                <Filtros pokemons = {store.pokemons} order = {store.order} types = {store.types}/>
             </div>
             <div className = {styles.pokemonsMainContainer}>
-                <Pokemons pokemonsData = {pokemonsData} images = {images} page = {page}/>
-                <NavigationBottomBar page = {page} quantPokemons = {pokemonsData.length}/>
+                <Pokemons pokemonsData = {store.pokemons} images = {images} page = {page}/>
+                <NavigationBottomBar page = {page} quantPokemons = {store.pokemons.length}/>
             </div>
         </div>
     </div>);
-
-    useEffect(() => {//Se corre esta funcion OnStart una sola vez porque al final tiene []
+    
+    useEffect(() => {//Se corre solo una vez al cargar el elemento
+        if(store.pokemons.length) return;//Esto es porque al volver atras se vuelve a cargar este elemento generando un nuevo dispatch cuando en realidad ya tenemos los pokemons
         dispatch(getPokemons(0, 40, true));//Hago un dispatch pidiendo los pokemons que necesito
     },[]);
 
     useEffect(() => {//Esto se ejecuta cuando ${pokemonsData} cambie
-        if(!pokemonsData.length) return;//Tambien se ejecuta al principio asi que esto es para que no entre si no estan cargados los pokemons
+        //Tambien se ejecuta al principio asi que esto es para que no entre si no estan cargados los pokemons
+        //La segunda condicion es porque entra aca cuando cambia el estado pokemons de la store, pero si ya tengo las imagenes cargadas no necesito cargarlas otra vez
+        if(!store.pokemons.length) return;
 
-        const imagePromises = pokemonsData.map((pokemon) => {//Creo una promesa por cada pokemon y las guardo en el array imagePromises
+        const imagePromises = store.pokemons.map((pokemon) => {//Creo una promesa por cada pokemon y las guardo en el array imagePromises
             return new Promise((resolve, reject) => {
                 const img = new Image();
                 img.addEventListener('load', () => resolve(img));
@@ -45,10 +49,11 @@ export default function Home(){
             })
         })
 
-        Promise.all(imagePromises).//Ejecuto todas las promesas 
-        then(response => setImages(response)).//Cuando tenga una respuesta actualizo el estado de este componente forzandolo a re-renderizarse
-        catch(err => setImages(err));
-    }, [pokemonsData])
+        Promise.all(imagePromises)//Ejecuto todas las promesas 
+        .then(response => {setImages(response)})//Cuando tenga una respuesta actualizo el estado de este componente forzandolo a re-renderizarse
+        .catch(err => setImages(err));
+    }, [store.pokemons])
+
 
     function loadingScreen(){
         return(
@@ -62,7 +67,7 @@ export default function Home(){
     return(
         <div>
             {!images?loadingScreen()://Si todavia no cargo las imagenes, que es lo ultimo en cargar muestra este loading
-            loadedPage}{/* Si ya tiene toda la informacion necesaria carga todos los elementos del home */}
+            loadedPage }{/* Si ya tiene toda la informacion necesaria carga todos los elementos del home */}
         </div>
     );
 }

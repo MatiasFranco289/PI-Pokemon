@@ -37,8 +37,10 @@ module.exports = server; */}
 //ESTO VA A SER LA API
 const express = require('express');
 const server = express();
+require('./db.js');
 //Mis routes
 const Pokemons = require('./routes/Pokemons.js');
+const Types = require('./routes/Types.js');
 
 //Esto es un middleware CORS, basicamente esta prohibido que una pagina cargue contenido de otra pero aca abajo le permito el acceso a las request que vengan desde
 //localhost:3001 para mas info leer https://www.ionos.es/digitalguide/paginas-web/desarrollo-web/cross-origin-resource-sharing/
@@ -52,5 +54,6 @@ server.use((req, res, next) => {
 
 server.use(express.json());
 server.use('/pokemons', Pokemons);
+server.use('/types', Types);
 
 module.exports = server;//Aca lo exporto nomas, el server lo prendo en index

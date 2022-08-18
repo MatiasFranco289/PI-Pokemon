@@ -1,22 +1,3 @@
-//                       _oo0oo_
-//                      o8888888o
-//                      88" . "88
-//                      (| -_- |)
-//                      0\  =  /0
-//                    ___/`---'\___
-//                  .' \\|     |// '.
-//                 / \\|||  :  |||// \
-//                / _||||| -:- |||||- \
-//               |   | \\\  -  /// |   |
-//               | \_|  ''\---/''  |_/ |
-//               \  .-\__  '-'  ___/-. /
-//             ___'. .'  /--.--\  `. .'___
-//          ."" '<  `.___\_<|>_/___.' >' "".
-//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-//         \  \ `_.   \_ __\ /__ _/   .-` /  /
-//     =====`-.____`.___ \_____/___.-`___.-'=====
-//                       `=---='
-//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /* const server = require('./src/app.js');
 const { conn } = require('./src/db.js');
 
@@ -29,7 +10,11 @@ conn.sync({ force: true }).then(() => {
  */
 
 const server = require('./src/app.js');//Pido la api
+const {conn} = require('./src/db.js');//Esto es la instancia actual de la conexion exportada en db.js
 
-server.listen(3000, () => {
-  console.log('El servidor esta escuchando en el puerto 3000.');
+conn.sync({force: true}).then(() => {//Sincronizo los modelos, creando las tablas si no existian
+  server.listen(3000, () => {//Levanto la api
+    console.log('El servidor esta escuchando en el puerto 3000.');
+  })
+  
 })
