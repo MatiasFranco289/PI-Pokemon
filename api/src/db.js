@@ -64,7 +64,9 @@ modelTipo(db);
 //Ahora hago destructuring para obtener los modelos que esas funciones cargaron en db
 const {pokemon, tipo} = db.models;
 
-//Por aca te faltaria definir las relaciones
+//Relaciones
+pokemon.belongsToMany(tipo, {through: 'pokemons_tipos',timestamps: false});
+tipo.belongsToMany(pokemon, {through: 'pokemons_tipos', timestamps: false});
 
 module.exports = {
   ...db.models,

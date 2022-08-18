@@ -6,13 +6,11 @@ const {DataTypes} = require('sequelize');
 module.exports = (sequelize) => {
     sequelize.define('tipo', {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING,//Creo que un int seria mas rapido pero la api de pokemon usa string asi que yo tambien
             primaryKey: true,
-            required: true
         },
         name: {
             type: DataTypes.STRING,
-            required: true
         }
     },{
         timestamps: false

@@ -1,6 +1,7 @@
 const {Router} = require('express');
 const router = Router();
 const axios = require('axios');
+const {pokemon, pokemons_tipos} = require('../db.js');
 
 router.get('/', async(req, res, next) => {
     if(req.query.name) return next();//Si recibis por query un atributo {name}, segui para delante, aca no lo voy a manejar
@@ -60,8 +61,32 @@ router.get('/', async(req, res, next) => {
     }
 })
 
-router.post('/', (req, res) => {
-    
+router.post('/', async (req, res) => {
+    //Nombre, tipos, imagen Datos
+    //Vida, ataque, defensa, velocidad Stats
+    //Altura, peso Caracteristicas
+     /* await axios.get('http://localhost:3000/types');//BORRAS ESTO DESPUES  */
+    try{
+        const {name, types, img, hp, attack, defense, speed, height, weight} = req.body;//Saco los parametros que vienen por body
+        //*Types es un array de ids
+        const createdPokemon  = await pokemon.create({//Creo el pokemon
+            name: name,
+            img: img,
+            hp: hp,
+            attack: attack,
+            defense: defense,
+            speed: speed,
+            height: height,
+            weight: weight
+        });
+        //Devuelvo un array de promesas, una por cada tipo que me hayan dado
+        const relationToCreate = types.map(type => createdPokemon.setTipos(type));
+        await Promise.all(relationToCreate);//Espero a que terminen todas las promesas
+        res.status(200).send('Ok!');//Exito
+    }
+    catch(err){
+        res.status(400).send(err.message);
+    }
 })
 
 module.exports = router;
