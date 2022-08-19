@@ -34,13 +34,22 @@
     flex-wrap: wrap;
 }
 
-.btnsContainer button{
+.typeBtn{
+    background-color: yellow;
+}
+
+.typeBtn_active{
+    background-color: green;
+    color: white;
+}
+
+.typeBtn, .typeBtn_active{
     min-width: 50px;
     min-height: 30px;
 }
 
-.btnsContainer button, .createBtn, .exitBtn{
-    background-color: yellow;
+
+.typeBtn, .createBtn, .exitBtn, .typeBtn_active{
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     border-style: none;
     font-weight: 600;
@@ -53,10 +62,11 @@
     min-width: 30%;
     min-height: 50px;
     font-size: 1.3em;
+    background-color: yellow;
 }
 
 
-.btnsContainer button:hover, .createBtn:hover, .exitBtn:hover{
+.typeBtn:hover, .createBtn:hover, .exitBtn:hover{
   transform: scale(1.1);
   color: white;
   background-color: orange;
@@ -139,6 +149,7 @@
 }
 
 .exitBtn{
+    background-color: yellow;
     position: absolute;
     left: 0;
     min-width: 200px;
@@ -161,7 +172,7 @@
     width: 30%;
     position: fixed;
     left: 0;
-    top: -9%;
+    top: -130px;
     animation: pikachuEnter;
     animation-duration: 1s;
 }
@@ -176,5 +187,43 @@
     color: rgb(218, 0, 0);
     font-weight: 600;
     font-size: 1.1em;
+}
+
+.hint{
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hint, .hint_active{
+    background-color: yellow;
+    position: fixed;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    border-radius: 5px;
+    padding-left: 5px;
+    display: flex;
+    width: 300px;
+    box-shadow: 5px 5px 10px black;
+    transition: 1s;
+}
+
+.hint_active{
+    transform: translateY(-100%);
+    opacity: 1;
+}
+
+.hint_active button, .hint button{
+   width: 30px;
+   height: 30px;
+   border-style: none;
+   box-shadow: 0px 0px 5px black;
+   margin: 5px;
+   font-weight: 700;
+   background-color: white;
+}
+
+.hint_active button:hover{
+    background-color: orangered;
+    color: white;
 }
 

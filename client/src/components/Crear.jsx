@@ -1,6 +1,7 @@
 import React,{useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom'
 import styles from '../styles/Crear.module.css'
+import popUpStyles from '../styles/PopUp.module.css'
 const titleImg = require('../imgs/SeatedPikachu.png')
 
 export default function Crear(){
@@ -25,7 +26,14 @@ export default function Crear(){
         hp: 'This field cannot be empty.',
         attack: 'This field cannot be empty.',
         defense: 'This field cannot be empty.',
-        speed: 'This field cannot be empty.'
+        speed: 'This field cannot be empty.',
+        height: 'This field cannot be empty.',
+        weight: 'This field cannot be empty.',
+        types: 'The pokemon must have at least 1 type.'
+    });
+    const [popUp, setPopUp] = useState({
+        title: '',
+        info: ''
     });
     const navigate = useNavigate();
 
@@ -57,7 +65,6 @@ export default function Crear(){
             break;
             case 'attack':
                 payload.max = 366;
-                console.log(payload);
                 validateFunc = (obj, pyld) => validateGenericAttr(obj, pyld);
             break;
             case 'defense':
@@ -85,7 +92,8 @@ export default function Crear(){
 
         function validateName(input){
             let err = ''
-            input.name.length < 3 && (err = 'The name must have at least 3 letters.')
+            if(input.name.length < 3) err = 'The name must have at least 3 letters.'
+            else if(input.name.length > 15) err = 'The name can have up to 15 letters.';
             !/^[A-Za-z\s]*$/.test(input.name) && (err = 'The name can only contain letters.');
             return err;
         }
@@ -117,17 +125,115 @@ export default function Crear(){
 
     function handleTypeChange(e){
         e.preventDefault();
-        console.log(e.target.name);
+
+        let newTypes = [];
+        if(input.types.includes(e.target.name)){//Si el boton esta activo
+            newTypes = input.types.filter(x => x!==e.target.name);
+            setInput({...input, types: newTypes});
+            if(newTypes.length) return;
+            setErrors({...errors, types: 'The pokemon must have at least 1 type.'});
+        }
+        else{//Si esta inactivo
+            if(input.types.length < 2){//Si el pokemon tiene menos de dos tipos
+                newTypes = input.types;
+                newTypes.push(e.target.name);
+                setInput({...input, types: newTypes});//Agrega el tipo
+                setErrors({...errors, types: ''});//Elimina errores
+            }
+            else{
+                setErrors({...errors, types: 'overTypes'});
+            }
+        }
+        
     }
 
+    function closeHint(e){
+        e.preventDefault();
+        if(errors.types !== 'overTypes') return
+        setErrors({...errors, types: ''});
+    }
+
+    async function sendForm(e){
+        e.preventDefault();
+        
+        if(Object.values(errors).some(element => element!=='')){//Convierto errors en un array y lo recorro para ver si hay algun error
+            //Manejar errores aca
+            setPopUp({
+                title: 'Error!',
+                info: 'Some fields are empty or have errors.'
+            })
+        }
+        else{//Aca se hace el send
+            const requestBody = {
+                name: input.name,
+                types: input.types,
+                img: input.img,
+                hp: input.hp,
+                attack: input.attack,
+                defense: input.defense,
+                speed: input.speed,
+                height: input.height,
+                weight: input.weight
+            }
+
+            //Hago el post a la api con la info del formulario
+            await fetch('http://localhost:3000/pokemons', {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(requestBody)
+            })
+            .then(data => data.json())
+            .then(res => {
+                if(res === 'Ok!'){
+                    setPopUp({
+                        title: 'Success!',
+                        info: 'Your Pokemon has been successfully created!'
+                    })
+                }
+                else if(res === 'SequelizeUniqueConstraintError'){
+                    setPopUp({
+                        title: 'Error!',
+                        info: 'An error has ocurred, a pokemon with the same name or image already exist.'
+                    });
+                }
+                else{
+                    setPopUp({
+                        title: 'Error!',
+                        info: 'An error has ocurred during the creation of your pokemon, try again later.'
+                    });
+                }
+            })
+        }
+    }
+
+    function closePopUp(){
+        setPopUp({
+            title: '',
+            info: ''
+        })
+    }
 
     return(
         <div className = {styles.mainWrapper}>
+
+            <div className = {popUp.title?popUpStyles.overlay_active:popUpStyles.overlay_inactive}>
+                <div className = {popUp.title?popUpStyles.popup_active:popUpStyles.popup_inactive}>
+                    <div className = {popUpStyles.titleSection}>
+                        <h2>{popUp.title}</h2>
+                    </div>
+
+                    <div className = {popUpStyles.infoSection}>
+                        <p>{popUp.info}</p>
+                        <button onClick = {() => closePopUp()}>Ok!</button>
+                    </div>
+                </div>
+            </div>
+            
             <button className = {styles.exitBtn} onClick = {() => goBack()}>Go back</button>
             <div className = {styles.titleContainer}>
                 <h1>Create Pokemon</h1>
             </div>
-            <form action="" method="post">
+            <form action="" method="post" onSubmit = {(e) => sendForm(e)}>
                 <img className = {styles.titleImg} src = {titleImg} alt="" />
                 <h2>Data</h2>
                 <div className = {styles.mainSection}>
@@ -143,14 +249,25 @@ export default function Crear(){
                         <label>Types</label>
                         <div className = {styles.btnsContainer}>
                             {types?.map((type, index) => {
-                                return <button type="" onClick = {(e) => handleTypeChange(e)} key = {`tpBtn_${index}`}>{type.name[0].toUpperCase() + type.name.slice(1)}</button>
+                                return <button onClick = {(e) => handleTypeChange(e)} key = {`tpBtn_${index}`} name = {type.id} className = {
+                                    input.types.includes(type.id)?styles.typeBtn_active:styles.typeBtn
+                                }>
+                                    {type.name[0].toUpperCase() + type.name.slice(1)}
+                                </button>
                             })}
+                        </div>
+                        {errors.types && errors.types!=='overTypes' &&(
+                            <p className = {styles.danger}>{errors.types}</p>
+                        )}
+                        <div className = {errors.types!=='overTypes'?styles.hint:styles.hint_active}>
+                            <p>A pokemon cannot have more than 2 types!</p>
+                            <button onClick = {(e) => closeHint(e)}>X</button>
                         </div>
                     </div>
 
                     <div className = {styles.section}>
                             <label htmlFor="imgUrl">Image url</label>
-                            <input name = 'img' value = {input.img} onChange = {(e) => handleChanges(e)}type="url" id = 'img' placeholder = 'Pokemon image link'/>
+                            <input name = 'img' value = {input.img} onChange = {(e) => handleChanges(e)}type="text" id = 'img' placeholder = 'Pokemon image link'/>
                             {errors.img && (
                                 <p className = {styles.danger}>{errors.img}</p>
                             )}

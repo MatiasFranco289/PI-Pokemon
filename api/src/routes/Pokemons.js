@@ -66,9 +66,11 @@ router.post('/', async (req, res) => {
     //Vida, ataque, defensa, velocidad Stats
     //Altura, peso Caracteristicas
      /* await axios.get('http://localhost:3000/types');//BORRAS ESTO DESPUES  */
+
     try{
         const {name, types, img, hp, attack, defense, speed, height, weight} = req.body;//Saco los parametros que vienen por body
         //*Types es un array de ids
+        console.log(name, types, img, hp, attack, defense, speed, height, weight);
         const createdPokemon  = await pokemon.create({//Creo el pokemon
             name: name,
             img: img,
@@ -82,10 +84,11 @@ router.post('/', async (req, res) => {
         //Devuelvo un array de promesas, una por cada tipo que me hayan dado
         const relationToCreate = types.map(type => createdPokemon.setTipos(type));
         await Promise.all(relationToCreate);//Espero a que terminen todas las promesas
-        res.status(200).send('Ok!');//Exito
+        res.status(200).json('Ok!');//Exito
     }
     catch(err){
-        res.status(400).send(err.message);
+        console.log('error: '+err.message);
+        res.status(400).json(err.name);
     }
 })
 
