@@ -105,7 +105,7 @@ router.get('/', async(req, res, next) => {
                 where: {
                     name: name
                 },
-                attributes: ['name','img'],
+                attributes: ['name','img','id','hp','attack','defense','speed','weight','height'],
                 include: {
                     model: types,
                     attributes: ['name'],
@@ -118,7 +118,14 @@ router.get('/', async(req, res, next) => {
             res.status(200).json({
                 name: dbPokemon[0].dataValues.name,
                 img: dbPokemon[0].dataValues.img,
-                types: dbPokemon[0].dataValues.types.map(type => {return type.dataValues.name})
+                types: dbPokemon[0].dataValues.types.map(type => {return type.dataValues.name}),
+                id: dbPokemon[0].dataValues.id,
+                hp: dbPokemon[0].dataValues.hp, 
+                attack: dbPokemon[0].dataValues.attack,
+                defense: dbPokemon[0].dataValues.defense,
+                speed: dbPokemon[0].dataValues.speed,
+                weight: dbPokemon[0].dataValues.weight,
+                height: dbPokemon[0].dataValues.height,
             })
         }
         catch(err){

@@ -27,7 +27,6 @@ export default function rootReducer(state = initialState, action){
             return {...state, pokemons: action.payload, types: pokemonTypes}
         case 'ORDER_ALPH_ASC':
             let sortedPokemonsAsc = [...state.pokemons];
-            console.log(sortedPokemonsAsc);
             OrderAlph(sortedPokemonsAsc, [1,-1], 'name');
             return{...state, pokemons: sortedPokemonsAsc, order: 'ORDER_ALPH_ASC'};
         case 'ORDER_ALPH_DESC':
@@ -37,17 +36,30 @@ export default function rootReducer(state = initialState, action){
         case 'CREATE_POKEMON':
             if(!state.pokemons.length) return state;//Si no hay pokemons no hace nada
             let newStateType = state.types;
+            let newStatePokemons = state.pokemons;
 
             action.payload.types.forEach(newType => {//Por cada tipo que hayan mandado en el payload
                 if(!state.types.includes(newType)){//Si no esta incluido en ${types} en la store
                     newStateType.push(newType);
                 }
             })
+            newStatePokemons.push(action.payload);
 
-            return {...state, pokemons: [...state.pokemons, action.payload], types: newStateType}
+            //Si habia algun ordenamiento activo tiene que reordenar el array para coincidir con ese ordenamiento
+            switch(state.order){
+                case 'ORDER_ALPH_ASC':
+                    OrderAlph(newStatePokemons, [1,-1], 'name');
+                break;
+                case 'ORDER_ALPH_DESC':
+                    OrderAlph(newStatePokemons, [-1,1], 'name')
+                break;
+            }
+
+            return {...state, pokemons: newStatePokemons, types: newStateType}
         default:
             return state;
     }
+
 
     function OrderAlph(ArrObj, order, prop){//order [1,-1] es ascendente, order [-1,1] es descendente, esto ordena un objeto por la propiedad dada
         ArrObj.sort((a,b) => (a[prop] > b[prop])?order[0]:order[1]);

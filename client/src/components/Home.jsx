@@ -9,6 +9,7 @@ import Filtros from './Filtros';
 import {getPokemons} from '../actions/index.js';//Esta son las acciones redux que defini
 import loadingGif from '../imgs/Loading.gif';
 
+
 export default function Home(){
     let {page} = useParams();//Aca agarro el param /:page del link
     page = (!page || isNaN(page))?0:page;//Si no se paso ningun param o el param pasado no es un numero, por defecto sera 0
