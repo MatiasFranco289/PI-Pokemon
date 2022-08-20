@@ -24,3 +24,10 @@ export function createPokemon(name, img, types){
     }
 }
 
+export function setOnlyOriginals(value){
+    return {
+        type: 'SET_ONLY_ORIGINALS',
+        payload: value
+    }
+}
+

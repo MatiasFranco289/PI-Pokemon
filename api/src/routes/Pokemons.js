@@ -5,43 +5,48 @@ const {pokemon, types} = require('../db.js');
 
 router.get('/', async(req, res, next) => {
     if(req.query.name) return next();//Si recibis por query un atributo {name}, segui para delante, aca no lo voy a manejar
+
     const {offset, limit, all} = req.query;
     const url = `https://pokeapi.co/api/v2/pokemon?offset=${!offset?0:offset}&limit=${!limit?40:limit}`;//Esto pide {limit} pokemons desde el pokemons numero {offset}
     let result = [];
     let dbPokemons;
-
-    //Esto es necesario que no tenga await porque me interes que mientras busca cosas de la db pueda tambien ir buscando lo de la api
-    
-    pokemon.findAll({//Esto pide los pokemons desde la db, fijate que no tiene await
+    //si {all} es true traera pokemons desde la db, si es false, solo traera desde la api
+    if(all==='true'){
+        //Esto es necesario que no tenga await porque me interes que mientras busca cosas de la db pueda tambien ir buscando lo de la api
+        pokemon.findAll({//Esto pide los pokemons desde la db, fijate que no tiene await
         attributes: ['name','img'],
         include: {
             model: types,
             required: true,
             attributes: ['name'],
             through: {
-                attributes: []
-            }
+            attributes: []
         }
-    })
-    .then(data => {//Cuando esta promesa se resolvio
-        dbPokemons = data.map(pokemon => {
-            return {
-                name: pokemon.name,
-                img: pokemon.img,
-                types: pokemon.types.map(type => {return type.name})
+        }
+        })
+        .then(data => {//Cuando esta promesa se resolvio
+            dbPokemons = data.map(pokemon => {
+                return {
+                    name: pokemon.name,
+                    img: pokemon.img,
+                    types: pokemon.types.map(type => {return type.name})
+                }
+            })
+
+            if(result.length){//Si results es diferente a un array vacio es porque ya termino de pedir los pokemons a la api
+                result = result.concat(dbPokemons);//Por lo tanto concateno el resultado de esta promesa con el resultado de la api
+                return res.status(200).json(result);//Y envio todo
             }
         })
-
-        if(result.length){//Si results es diferente a un array vacio es porque ya termino de pedir los pokemons a la api
-            result = result.concat(dbPokemons);//Por lo tanto concateno el resultado de esta promesa con el resultado de la api
-            return res.status(200).json(result);//Y envio todo
-        }
-    })
-    .catch(err => {
-        //Me interesa tirar un console y no un error porque aunque no pueda traer los pokemons de la db me interesa que traiga los de la api
-        dbPokemons = [];//Esto es para que no se cuelgue en el if de abajo de todo con el send
-        console.error('The following error has ocurred and pokemons created by users cannot be accessed: '+err.message);
-    })
+        .catch(err => {
+            //Me interesa tirar un console y no un error porque aunque no pueda traer los pokemons de la db me interesa que traiga los de la api
+            dbPokemons = [];//Esto es para que no se cuelgue en el if de abajo de todo con el send
+            console.error('The following error has ocurred and pokemons created by users cannot be accessed: '+err.message);
+        })
+    }
+    else{
+        dbPokemons = [];
+    }
 
 
     try{

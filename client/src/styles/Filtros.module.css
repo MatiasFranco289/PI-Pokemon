@@ -1,8 +1,20 @@
-.filtrosMainWrapper{
+.filtrosMainWrapper_loading, .filtrosMainWrapper_active{
     width: 100%;
     text-align: center;
     color: white;
 }
+
+.filtrosMainWrapper_active{
+  animation: appear;
+  animation-duration: 1s;
+}
+
+@keyframes appear{
+  from{opacity: 0;}
+  to{opacity: 1;}
+}
+
+
 
 .filtersWrapperColumn, .filterWrapperRow{
     background-color: rgba(255,255,255,.2);
@@ -50,7 +62,7 @@
 }
 
 
-.filtrosMainWrapper h2{
+.filtrosMainWrapper_active, .filtrosMainWrapper_loading h2{
     background-color: rgba(255, 255, 255, .3);
     border-radius: 4px;
     padding: 10px;

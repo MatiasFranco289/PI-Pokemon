@@ -1,7 +1,8 @@
 const initialState = {
     pokemons: [],
     order: 'none',
-    types: []
+    types: [],
+    filters: []
 }
 
 export default function rootReducer(state = initialState, action){
@@ -24,15 +25,13 @@ export default function rootReducer(state = initialState, action){
                 pokemonTypes.push(key);
             }
 
-            return {...state, pokemons: action.payload, types: pokemonTypes}
+            let newPokemonsState = state.pokemons.concat(action.payload);
+            let newPokemonTypes = state.types.concat(pokemonTypes);
+            return {...state, pokemons: newPokemonsState, types: newPokemonTypes};
         case 'ORDER_ALPH_ASC':
-            let sortedPokemonsAsc = [...state.pokemons];
-            OrderAlph(sortedPokemonsAsc, [1,-1], 'name');
-            return{...state, pokemons: sortedPokemonsAsc, order: 'ORDER_ALPH_ASC'};
+            return{...state, order: 'ORDER_ALPH_ASC'};
         case 'ORDER_ALPH_DESC':
-            let sortedPokemonsDesc = [...state.pokemons];
-            OrderAlph(sortedPokemonsDesc, [-1,1], 'name');
-            return{...state, pokemons: sortedPokemonsDesc, order: 'ORDER_ALPH_DESC'};
+            return{...state, order: 'ORDER_ALPH_DESC'};
         case 'CREATE_POKEMON':
             if(!state.pokemons.length) return state;//Si no hay pokemons no hace nada
             let newStateType = state.types;
@@ -44,24 +43,11 @@ export default function rootReducer(state = initialState, action){
                 }
             })
             newStatePokemons.push(action.payload);
-
-            //Si habia algun ordenamiento activo tiene que reordenar el array para coincidir con ese ordenamiento
-            switch(state.order){
-                case 'ORDER_ALPH_ASC':
-                    OrderAlph(newStatePokemons, [1,-1], 'name');
-                break;
-                case 'ORDER_ALPH_DESC':
-                    OrderAlph(newStatePokemons, [-1,1], 'name')
-                break;
-            }
-
             return {...state, pokemons: newStatePokemons, types: newStateType}
+        case 'SET_ONLY_ORIGINALS':
+            return {...state, filters: ['originals']}
         default:
             return state;
     }
 
-
-    function OrderAlph(ArrObj, order, prop){//order [1,-1] es ascendente, order [-1,1] es descendente, esto ordena un objeto por la propiedad dada
-        ArrObj.sort((a,b) => (a[prop] > b[prop])?order[0]:order[1]);
-    }
 }
