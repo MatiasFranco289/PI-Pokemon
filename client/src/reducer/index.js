@@ -27,14 +27,24 @@ export default function rootReducer(state = initialState, action){
             return {...state, pokemons: action.payload, types: pokemonTypes}
         case 'ORDER_ALPH_ASC':
             let sortedPokemonsAsc = [...state.pokemons];
+            console.log(sortedPokemonsAsc);
             OrderAlph(sortedPokemonsAsc, [1,-1], 'name');
             return{...state, pokemons: sortedPokemonsAsc, order: 'ORDER_ALPH_ASC'};
         case 'ORDER_ALPH_DESC':
             let sortedPokemonsDesc = [...state.pokemons];
             OrderAlph(sortedPokemonsDesc, [-1,1], 'name');
             return{...state, pokemons: sortedPokemonsDesc, order: 'ORDER_ALPH_DESC'};
-        case 'ORDER_ATT_ASC':
-            
+        case 'CREATE_POKEMON':
+            if(!state.pokemons.length) return state;//Si no hay pokemons no hace nada
+            let newStateType = state.types;
+
+            action.payload.types.forEach(newType => {//Por cada tipo que hayan mandado en el payload
+                if(!state.types.includes(newType)){//Si no esta incluido en ${types} en la store
+                    newStateType.push(newType);
+                }
+            })
+
+            return {...state, pokemons: [...state.pokemons, action.payload], types: newStateType}
         default:
             return state;
     }

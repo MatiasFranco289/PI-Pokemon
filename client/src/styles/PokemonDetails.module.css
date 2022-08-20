@@ -45,7 +45,8 @@
 }
 
 .imgContainer img{
-    width: 70%;
+    width: 300px;
+    height: 300px;
     position: relative;
     top: -130%;
 }

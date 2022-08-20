@@ -9,3 +9,18 @@ export function getPokemons(offset, limit, all){//This should get all the 40 pok
     } 
 }
 
+export function createPokemon(name, img, types){
+    //Cuando un usuario crea un pokemon este no aparecera inmediatamente en el home porque para eso tendriamos que hacer un nuevo get/pokemons
+    //Como esto lleva mucho tiempo y estariamos trayendo todos los pokemons que ya tenemos en la store + 1 nuevo, es mejor simplemente
+    //Que cuando un usuario cree un pokemon se a;ada a la db pero ademas se a;ada a la store para que se pueda ver en el home sin necesidad
+    //De tener que traer todos los pokemons otra vez
+    return {
+        type: 'CREATE_POKEMON',
+        payload: {
+            name: name,
+            img: img,
+            types: types
+        }
+    }
+}
+

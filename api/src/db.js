@@ -62,11 +62,11 @@ const db = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/pokemo
 modelPokemon(db);
 modelTipo(db);
 //Ahora hago destructuring para obtener los modelos que esas funciones cargaron en db
-const {pokemon, tipo} = db.models;
+const {pokemon, types} = db.models;
 
 //Relaciones
-pokemon.belongsToMany(tipo, {through: 'pokemons_tipos',timestamps: false});
-tipo.belongsToMany(pokemon, {through: 'pokemons_tipos', timestamps: false});
+pokemon.belongsToMany(types, {through: 'pokemons_tipos',timestamps: false});
+types.belongsToMany(pokemon, {through: 'pokemons_tipos', timestamps: false});
 
 module.exports = {
   ...db.models,

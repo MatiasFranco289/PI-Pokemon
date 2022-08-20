@@ -1,13 +1,48 @@
 const {Router} = require('express');
 const router = Router();
 const axios = require('axios');
-const {pokemon, pokemons_tipos} = require('../db.js');
+const {pokemon, types} = require('../db.js');
 
 router.get('/', async(req, res, next) => {
     if(req.query.name) return next();//Si recibis por query un atributo {name}, segui para delante, aca no lo voy a manejar
-
     const {offset, limit, all} = req.query;
     const url = `https://pokeapi.co/api/v2/pokemon?offset=${!offset?0:offset}&limit=${!limit?40:limit}`;//Esto pide {limit} pokemons desde el pokemons numero {offset}
+    let result = [];
+    let dbPokemons;
+
+    //Esto es necesario que no tenga await porque me interes que mientras busca cosas de la db pueda tambien ir buscando lo de la api
+    
+    pokemon.findAll({//Esto pide los pokemons desde la db, fijate que no tiene await
+        attributes: ['name','img'],
+        include: {
+            model: types,
+            required: true,
+            attributes: ['name'],
+            through: {
+                attributes: []
+            }
+        }
+    })
+    .then(data => {//Cuando esta promesa se resolvio
+        dbPokemons = data.map(pokemon => {
+            return {
+                name: pokemon.name,
+                img: pokemon.img,
+                types: pokemon.types.map(type => {return type.name})
+            }
+        })
+
+        if(result.length){//Si results es diferente a un array vacio es porque ya termino de pedir los pokemons a la api
+            result = result.concat(dbPokemons);//Por lo tanto concateno el resultado de esta promesa con el resultado de la api
+            return res.status(200).json(result);//Y envio todo
+        }
+    })
+    .catch(err => {
+        //Me interesa tirar un console y no un error porque aunque no pueda traer los pokemons de la db me interesa que traiga los de la api
+        dbPokemons = [];//Esto es para que no se cuelgue en el if de abajo de todo con el send
+        console.error('The following error has ocurred and pokemons created by users cannot be accessed: '+err.message);
+    })
+
 
     try{
         const {data} = await axios.get(url);//Intento guardar la info del fetch aca
@@ -19,7 +54,7 @@ router.get('/', async(req, res, next) => {
 
         let pokemonsInfo = await axios.all(AllRequests);//Hago un fetch masivo con cada uno de las 40 urls de los pokemons, esto deberia devolver un array de objetos
 
-           let result = pokemonsInfo.map((pokemon) => {//Mapeo el array obteniendo las propiedades que me interesan
+           result = pokemonsInfo.map((pokemon) => {//Mapeo el array obteniendo las propiedades que me interesan
             return {
                 name: pokemon.data.name,
                 img: pokemon.data.sprites.other.home.front_default,
@@ -28,7 +63,11 @@ router.get('/', async(req, res, next) => {
             }
         })
 
-        return res.status(200).json(result);
+        if(dbPokemons){//Si la promesa pidiendo pokemons a la db ya termino
+            result = result.concat(dbPokemons);//Concateno todo
+            return res.status(200).json(result);//Envio
+        }
+
     }
     catch(err){
         res.status(404).send(`The following error has ocurred: ${err.message}`);
@@ -36,11 +75,13 @@ router.get('/', async(req, res, next) => {
 })
 
  router.get('/', async (req, res) => {//Si recibe info por query entra aca, esto es un buscador de pokemons por nombre
-    const {name} = req.query;
+    let {name} = req.query;
+    name = name.toLowerCase();
     const link = `https://pokeapi.co/api/v2/pokemon/${name}`;
-
+    
     try{
         let {data} = await axios.get(link);
+        
         let pokemonFullInfo = {
             name : data.name,
             img: data.sprites.other.home.front_default,
@@ -57,20 +98,50 @@ router.get('/', async(req, res, next) => {
         res.status(200).json(pokemonFullInfo);
     }
     catch(err){
-        res.status(404).send(new Error(err.message));
+        //Si entro aca puede ser que el nombre que me pasaron no este en la api
+        //Todavia tengo que buscarlo en la db
+        try{
+            const dbPokemon = await pokemon.findAll({
+                where: {
+                    name: name
+                },
+                attributes: ['name','img'],
+                include: {
+                    model: types,
+                    attributes: ['name'],
+                    through:{
+                        attributes: []
+                    }
+                }
+            })
+    
+            res.status(200).json({
+                name: dbPokemon[0].dataValues.name,
+                img: dbPokemon[0].dataValues.img,
+                types: dbPokemon[0].dataValues.types.map(type => {return type.dataValues.name})
+            })
+        }
+        catch(err){
+            res.status(404).send('The specified pokemon may not exist, the following error has ocurred: '+err.message);
+        }
+        
     }
 })
 
 router.post('/', async (req, res) => {
-    //Nombre, tipos, imagen Datos
-    //Vida, ataque, defensa, velocidad Stats
-    //Altura, peso Caracteristicas
-     /* await axios.get('http://localhost:3000/types');//BORRAS ESTO DESPUES  */
 
     try{
         const {name, types, img, hp, attack, defense, speed, height, weight} = req.body;//Saco los parametros que vienen por body
         //*Types es un array de ids
-        console.log(name, types, img, hp, attack, defense, speed, height, weight);
+
+        try{
+            //Intento buscar el nombre que me pasaron en la api y en la db
+            const nameVerification = await axios.get(`http://localhost:3000/pokemons?name=${name}`);
+            return res.status(400).json('SequelizeUniqueConstraintError')//Si llego aca es porque ya existe alguien con el mismo nombre en la api o db, tiro error
+        }
+        catch(err){}
+       
+        
         const createdPokemon  = await pokemon.create({//Creo el pokemon
             name: name,
             img: img,
@@ -82,12 +153,11 @@ router.post('/', async (req, res) => {
             weight: weight
         });
         //Devuelvo un array de promesas, una por cada tipo que me hayan dado
-        const relationToCreate = types.map(type => createdPokemon.setTipos(type));
+        const relationToCreate = types.map(type => createdPokemon.setTypes(type));
         await Promise.all(relationToCreate);//Espero a que terminen todas las promesas
         res.status(200).json('Ok!');//Exito
     }
     catch(err){
-        console.log('error: '+err.message);
         res.status(400).json(err.name);
     }
 })

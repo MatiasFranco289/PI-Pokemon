@@ -1,6 +1,7 @@
 import React from "react";
 import styles from '../styles/Buscador.module.css';
 import {useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 export default function Buscador(){
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function Buscador(){
 
     return(
         <form className = {styles.buscadorWrapper} action="" method="get" onSubmit={(e) => manageSearch(e)}>
+            <Link to='/create'>TOCAMEEE</Link>
             <input type="text" name="busqueda" required = {true}/>
             <button type="submit">Buscar</button>
         </form>

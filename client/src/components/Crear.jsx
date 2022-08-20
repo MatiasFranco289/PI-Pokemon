@@ -2,12 +2,12 @@ import React,{useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom'
 import styles from '../styles/Crear.module.css'
 import popUpStyles from '../styles/PopUp.module.css'
+import {useDispatch} from 'react-redux';
+import {createPokemon} from '../actions/index.js';
 const titleImg = require('../imgs/SeatedPikachu.png')
 
 export default function Crear(){
-    //Nombre, tipos, imagen Datos
-    //Vida, ataque, defensa, velocidad Stats
-    //Altura, peso Caracteristicas
+    const dispatch = useDispatch();
     const [types, setTypes] = useState();
     const [input, setInput] = useState({
         name: '',
@@ -107,7 +107,7 @@ export default function Crear(){
             '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
             '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
             !pattern.test(input.img) && (err = 'This should be a valid url.');
-            return err;
+            return '';
         }
 
         function validateGenericAttr(input, payload){
@@ -127,8 +127,8 @@ export default function Crear(){
         e.preventDefault();
 
         let newTypes = [];
-        if(input.types.includes(e.target.name)){//Si el boton esta activo
-            newTypes = input.types.filter(x => x!==e.target.name);
+        if(input.types.some(type => type.id===e.target.id)){//Si el boton esta activo
+            newTypes = input.types.filter(x => x.id!==e.target.id);
             setInput({...input, types: newTypes});
             if(newTypes.length) return;
             setErrors({...errors, types: 'The pokemon must have at least 1 type.'});
@@ -136,7 +136,8 @@ export default function Crear(){
         else{//Si esta inactivo
             if(input.types.length < 2){//Si el pokemon tiene menos de dos tipos
                 newTypes = input.types;
-                newTypes.push(e.target.name);
+                newTypes.push({id: e.target.id,name: e.target.name});
+                
                 setInput({...input, types: newTypes});//Agrega el tipo
                 setErrors({...errors, types: ''});//Elimina errores
             }
@@ -165,8 +166,8 @@ export default function Crear(){
         }
         else{//Aca se hace el send
             const requestBody = {
-                name: input.name,
-                types: input.types,
+                name: input.name.toLowerCase(),
+                types: input.types.map(x => {return x.id}),
                 img: input.img,
                 hp: input.hp,
                 attack: input.attack,
@@ -189,6 +190,9 @@ export default function Crear(){
                         title: 'Success!',
                         info: 'Your Pokemon has been successfully created!'
                     })
+                
+                dispatch(createPokemon(input.name.toLowerCase(), input.img, input.types.map(type => type.name)));
+
                 }
                 else if(res === 'SequelizeUniqueConstraintError'){
                     setPopUp({
@@ -249,8 +253,8 @@ export default function Crear(){
                         <label>Types</label>
                         <div className = {styles.btnsContainer}>
                             {types?.map((type, index) => {
-                                return <button onClick = {(e) => handleTypeChange(e)} key = {`tpBtn_${index}`} name = {type.id} className = {
-                                    input.types.includes(type.id)?styles.typeBtn_active:styles.typeBtn
+                                return <button onClick = {(e) => handleTypeChange(e)} key = {`tpBtn_${index}`} id = {type.id} name = {type.name[0].toUpperCase() + type.name.slice(1)} className = {
+                                    input.types.some(element => element.id===type.id)?styles.typeBtn_active:styles.typeBtn
                                 }>
                                     {type.name[0].toUpperCase() + type.name.slice(1)}
                                 </button>
