@@ -80,11 +80,34 @@ router.get('/', async(req, res, next) => {
 })
 
  router.get('/', async (req, res) => {//Si recibe info por query entra aca, esto es un buscador de pokemons por nombre
-    let {name} = req.query;
-    name = name.toLowerCase();
+    let {name, extensive} = req.query;
     const link = `https://pokeapi.co/api/v2/pokemon/${name}`;
-    
-    try{
+
+    try{//Intenta buscar el pokemon en la db
+        name = name[0].toUpperCase() + name.slice(1);
+        return await searchOnDb();
+    }
+    catch(err){
+        //Si entro aca puede ser que el nombre que me pasaron no este en la db
+        //Si extensive es falso retorno error, si es cierto todavia tengo que intentar buscarlo en la api
+        if(extensive === 'false'){
+            let error = `The specified pokemon may not exist, maybe you should try to set 'extensive=true' to search too in the db`;
+            error += `, the following error has ocurred: ${err.message}`;
+            return res.status(204).json(error);//Aca no devuelvo 404 porque se empieza a llenar la consola de errores y el fetch toma
+                                               //El 404 como exito asi que no lo puedo manejar con el catch
+        }
+
+        name = name.toLowerCase();
+
+        try{
+            return await searchOnApi();
+        }
+        catch(err){
+            return res.status(404).json('The specified pokemon may not exist, the following error has ocurred: '+err.message);
+        }
+    }
+
+    async function searchOnApi(){
         let {data} = await axios.get(link);
         
         let pokemonFullInfo = {
@@ -100,43 +123,36 @@ router.get('/', async(req, res, next) => {
             height: data.height
         };
 
-        res.status(200).json(pokemonFullInfo);
+        return res.status(200).json(pokemonFullInfo);
     }
-    catch(err){
-        //Si entro aca puede ser que el nombre que me pasaron no este en la api
-        //Todavia tengo que buscarlo en la db
-        try{
-            const dbPokemon = await pokemon.findAll({
-                where: {
-                    name: name
-                },
-                attributes: ['name','img','id','hp','attack','defense','speed','weight','height'],
-                include: {
-                    model: types,
-                    attributes: ['name'],
-                    through:{
-                        attributes: []
-                    }
+
+    async function searchOnDb(){
+        const dbPokemon = await pokemon.findAll({
+            where: {
+                name: name
+            },
+            attributes: ['name','img','id','hp','attack','defense','speed','weight','height'],
+            include: {
+                model: types,
+                attributes: ['name'],
+                through:{
+                    attributes: []
                 }
-            })
-    
-            res.status(200).json({
-                name: dbPokemon[0].dataValues.name,
-                img: dbPokemon[0].dataValues.img,
-                types: dbPokemon[0].dataValues.types.map(type => {return type.dataValues.name}),
-                id: dbPokemon[0].dataValues.id,
-                hp: dbPokemon[0].dataValues.hp, 
-                attack: dbPokemon[0].dataValues.attack,
-                defense: dbPokemon[0].dataValues.defense,
-                speed: dbPokemon[0].dataValues.speed,
-                weight: dbPokemon[0].dataValues.weight,
-                height: dbPokemon[0].dataValues.height,
-            })
-        }
-        catch(err){
-            res.status(404).send('The specified pokemon may not exist, the following error has ocurred: '+err.message);
-        }
-        
+            }
+        })
+
+        return res.status(200).json({
+            name: dbPokemon[0].dataValues.name,
+            img: dbPokemon[0].dataValues.img,
+            types: dbPokemon[0].dataValues.types.map(type => {return type.dataValues.name}),
+            id: dbPokemon[0].dataValues.id,
+            hp: dbPokemon[0].dataValues.hp, 
+            attack: dbPokemon[0].dataValues.attack,
+            defense: dbPokemon[0].dataValues.defense,
+            speed: dbPokemon[0].dataValues.speed,
+            weight: dbPokemon[0].dataValues.weight,
+            height: dbPokemon[0].dataValues.height,
+        })
     }
 })
 
@@ -153,7 +169,6 @@ router.post('/', async (req, res) => {
         }
         catch(err){}
        
-        
         const createdPokemon  = await pokemon.create({//Creo el pokemon
             name: name,
             img: img,

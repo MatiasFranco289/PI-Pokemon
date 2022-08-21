@@ -2,7 +2,10 @@ const initialState = {
     pokemons: [],
     order: 'none',
     types: [],
-    filters: []
+    filters: {
+        originals: false,
+        types: []
+    }
 }
 
 export default function rootReducer(state = initialState, action){
@@ -45,7 +48,9 @@ export default function rootReducer(state = initialState, action){
             newStatePokemons.push(action.payload);
             return {...state, pokemons: newStatePokemons, types: newStateType}
         case 'SET_ONLY_ORIGINALS':
-            return {...state, filters: ['originals']}
+            return {...state, filters: {...state.filters, originals: !state.filters.originals}}
+        case 'SET_TYPE_FILTER':
+            return {...state, filters: {...state.filters, types: action.payload}}
         default:
             return state;
     }

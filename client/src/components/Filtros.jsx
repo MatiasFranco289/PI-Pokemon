@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import {useDispatch} from 'react-redux';
 import styles from '../styles/Filtros.module.css';
-import {setOnlyOriginals} from '../actions/index.js';
+import {setOnlyOriginals, setTypeFilter} from '../actions/index.js';
+import { useNavigate } from "react-router-dom";
 
 export default function Filtros(props){
-
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     function handleOrderChange(e){//Esto maneja los cambios en el tipo de ordenado
@@ -12,11 +13,21 @@ export default function Filtros(props){
     }
 
     function handleTypeFilter(e){
-        alert('sex');
+        if(props.filters.types.includes(e.target.name)){//Si hiciste click sobre un boton activo
+            let newState = props.filters.types.filter(x => x !== e.target.name)
+            dispatch(setTypeFilter(newState));
+        }
+        else{//Si hiciste click sobre un boton inactivo
+            let newState = [...props.filters.types, e.target.name];
+            newState.length > 2 && newState.shift();
+            dispatch(setTypeFilter(newState));
+            navigate('/home/0');
+        }
     }
 
     function handleOriginal(){
-        dispatch(setOnlyOriginals());
+        dispatch(setOnlyOriginals());//Hace un dispatch que cambia el estado de filters.original (bool) a su contrario
+        navigate('/home/0');
     }
 
     function showPage(){
@@ -29,17 +40,19 @@ export default function Filtros(props){
 
                 <div className = {styles.typesContainer}>
                     {props.types.map((type, index) => {
-                        return <button key = {`btnFltr${index}`} onClick={(e) => handleTypeFilter(e)}>{type}</button>
+                        return <button className = {props.filters.types.includes(type)?styles.typesBtn_active:styles.typesBtn_inactive} name = {type} key = {`btnFltr${index}`} onClick={(e) => handleTypeFilter(e)}>
+                            {type}
+                        </button>
                     })}
                 </div>
             </div>
 
             <div className = {styles.filterWrapperRow}>
-                    <h4>Only originals</h4>
+                    <h4>Created by users</h4>
 
                     <label className = {styles.switch}>
                         <input type="checkbox"/>
-                        <span className = {styles.slider} onClick = {() => handleOriginal()}></span>
+                        <span className = {props.filters.originals?styles.slider_active:styles.slider_inactive} onClick = {() => handleOriginal()}></span>
                     </label>
             </div>
 

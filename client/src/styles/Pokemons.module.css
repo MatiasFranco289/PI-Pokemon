@@ -12,3 +12,12 @@
     width: 100%;
 }
 
+.errorWrapper{
+    color: white;
+    text-align: center;
+}
+
+.errorWrapper img{
+    width: 300px;
+}
+

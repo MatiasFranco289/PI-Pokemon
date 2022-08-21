@@ -165,8 +165,10 @@ export default function Crear(){
             })
         }
         else{//Aca se hace el send
+            let normalizedName = input.name[0].toUpperCase() + input.name.slice(1).toLowerCase();
+
             const requestBody = {
-                name: input.name.toLowerCase(),
+                name: normalizedName,
                 types: input.types.map(x => {return x.id}),
                 img: input.img,
                 hp: input.hp,
@@ -191,7 +193,7 @@ export default function Crear(){
                         info: 'Your Pokemon has been successfully created!'
                     })
                 
-                dispatch(createPokemon(input.name.toLowerCase(), input.img, input.types.map(type => type.name)));
+                dispatch(createPokemon(normalizedName, input.img, input.types.map(type => type.name)));
 
                 }
                 else if(res === 'SequelizeUniqueConstraintError'){

@@ -9,7 +9,7 @@ export default function PokemonDetails(){
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://localhost:3000/pokemons?name=${name}`)
+        fetch(`http://localhost:3000/pokemons?name=${name}&extensive=true`)
         .then(data => data.json())
         .then(response => setPokemonInfo(response))
         .catch(err => console.error(err));
