@@ -37,4 +37,23 @@ export function setTypeFilter(type){
     }
 }
 
+export function addAttackInfo(pokemonsName){
+    return async function(dispatch){
+        const promArr = pokemonsName.map(name => {
+            return fetch(`http://localhost:3000/pokemons?name=${name}&extensive=true`)
+            .then(data => data.json())
+            .then(response => {return {
+                name: response.name,
+                attack: response.attack
+            }});
+        })
+        
+        const response = await Promise.all(promArr);
+        dispatch({
+            type: 'ADD_ATTACK_INFO',
+            payload: response
+        })
+    }
+}
+
 

@@ -53,15 +53,21 @@ export default function Home(){
         return pkms;
     }
 
-    function sortByAlph(pkms){
+    function sortPokemons(pkms){
         let sortedPokemons = pkms;
 
         switch(store.order){
             case 'ORDER_ALPH_ASC':
-                OrderAlph(sortedPokemons,[1,-1],'name');
+                OrderAlph(sortedPokemons,[1, -1],'name');
             break;
             case 'ORDER_ALPH_DESC':
                 OrderAlph(sortedPokemons,[-1, 1],'name');
+            break;
+            case 'ORDER_ATT_ASC':
+                OrderAlph(sortedPokemons,[1, -1],'attack');
+            break;
+            case 'ORDER_ATT_DESC':
+                OrderAlph(sortedPokemons,[-1, 1],'attack');
             break;
         }
 
@@ -77,18 +83,24 @@ export default function Home(){
         return pkms;
     }
 
+
+    //sort by attack
+    //Haces un dispatch
+    //Reordenas la store
+    //Y listo we
+
     function showPage(){
         //Si intentas cambiar manualmente el link para forzar el parametro {page} mas haya de lo que deberias, esto te lleva home/0
-        let localPokemons = sortByAlph([...store.pokemons]);//Sort by alph, no necesito ningun dato extra 
+        let localPokemons = sortPokemons([...store.pokemons]);//Sort by alph, no necesito ningun dato extra 
         localPokemons = filterByType(localPokemons);//Sort by type, no necesito ningun dato extra
-        localPokemons = filterByProcedency(localPokemons);
+        localPokemons = filterByProcedency(localPokemons);//SortByProcedency identifica los pokemons originales porque su primera letra es minuscula
 
         return(    
         <div className = {styles.homeMainContainer}>
             <Buscador/>
             <div className = {styles.homeMainContent}>
                 <div className = {styles.filtersMain}>
-                    <Filtros quantPokemons = {store.pokemons.length} order = {store.order} types = {store.types} filters = {store.filters}/>
+                    <Filtros pokemons = {store.pokemons.map(x => {return {name:x.name,attack:x.attack}})} order = {store.order} types = {store.types} filters = {store.filters}/>
                 </div>
                 <div className = {styles.pokemonsMainContainer}>
                     <Pokemons pokemonsData = {localPokemons} page = {page}/>

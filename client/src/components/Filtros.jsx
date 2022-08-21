@@ -1,15 +1,20 @@
-import React, {useState} from "react";
+import React, {useEffect} from "react";
 import {useDispatch} from 'react-redux';
 import styles from '../styles/Filtros.module.css';
 import {setOnlyOriginals, setTypeFilter} from '../actions/index.js';
 import { useNavigate } from "react-router-dom";
+import {addAttackInfo} from '../actions/index.js';
 
 export default function Filtros(props){
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        dispatch(addAttackInfo(props.pokemons.map(x => x.name)));
+    }, [])
+
     function handleOrderChange(e){//Esto maneja los cambios en el tipo de ordenado
-        dispatch({type: e.target.value});
+        dispatch({type: 'SORT', payload: e.target.value});
     }
 
     function handleTypeFilter(e){
@@ -34,7 +39,6 @@ export default function Filtros(props){
        return(
         <div className = {styles.filtrosMainWrapper_active}>
             <h2>Filters</h2>
-
             <div className = {styles.filtersWrapperColumn}>
                 <h4>Tipos</h4>
 
@@ -81,5 +85,5 @@ export default function Filtros(props){
     }
 
     
-    return(props.quantPokemons > 12?showPage():loading());
+    return(props.pokemons[0].attack?showPage():loading());
 }
