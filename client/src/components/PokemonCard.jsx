@@ -13,7 +13,9 @@ export default function PokemonCard(props){
     return (
         <Link to = {url} className = {styles.mainWrapper}>
             <h2>{capitalizeFirstLetter(props.name)}</h2>        
-            <img src={props.img} alt={`${props.name}.jpg`}/>
+            <div className = {styles.imgContainer}>
+                <img src={props.img} alt={`${props.name}.jpg`}/>
+            </div>
 
             <div className = {styles.stripeBottom}>
                 <h4>Tipos: {types}</h4> 

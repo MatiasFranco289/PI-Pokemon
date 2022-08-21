@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useParams} from 'react-router-dom';
 import styles from '../styles/PokemonDetails.module.css';
 import { useNavigate } from "react-router-dom";
+const loadingGif = require('../imgs/Loading.gif');
 
 export default function PokemonDetails(){
     const {name} = useParams();
@@ -9,10 +10,35 @@ export default function PokemonDetails(){
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://localhost:3000/pokemons?name=${name}&extensive=true`)
-        .then(data => data.json())
-        .then(response => setPokemonInfo(response))
-        .catch(err => console.error(err));
+        async function getPokemons(){
+            let response;
+
+            try{
+                response = await fetch(`http://localhost:3000/pokemons?name=${name}`)
+                .then(response => {
+                    if(response.status===404) throw new Error('404');
+                    return response.json();
+                });
+
+                setPokemonInfo(response)
+            }
+            catch(err){
+                try{
+                    response = await fetch(`http://localhost:3000/pokemons/${name}`)//Intento buscarlo por su id y no por su nombre
+                    .then(data => {
+                        if(data.status===404) throw new Error(404);
+                        return data.json();
+                    })
+
+                    setPokemonInfo(response);
+                }
+                catch(err){//Si queres a;adir una pagina de not found este es el lugar
+
+                }
+            }
+        }
+
+        getPokemons();
     }, []);
 
     function showPokemonInfo(){
@@ -90,7 +116,11 @@ export default function PokemonDetails(){
                 <button onClick ={() => navigate(-1)} className = {styles.exitBtn}>Go back</button>
             }
             
-            {!pokemonInfo?<p>Cargando...</p>:
+            {!pokemonInfo?
+            <div className = {styles.loadingWrapper}>
+                <img src = {loadingGif} alt=""/>
+                <h1>Searching...</h1>
+            </div>:
             showPokemonInfo()}
         </div>
     )

@@ -79,84 +79,35 @@ router.get('/', async(req, res, next) => {
     }
 })
 
- router.get('/', async (req, res) => {//Si recibe info por query entra aca, esto es un buscador de pokemons por nombre
+ router.get('/', async (req, res) => {//Esto es un buscador por nombre, recibe por query 'extensive' que en caso de ser true buscara en la api, sino, solo en la db
     let {name, extensive} = req.query;
+
     const link = `https://pokeapi.co/api/v2/pokemon/${name}`;
 
     try{//Intenta buscar el pokemon en la db
         name = name[0].toUpperCase() + name.slice(1);
-        return await searchOnDb();
+        return await searchOnDb({name: name}, res);
     }
     catch(err){
         //Si entro aca puede ser que el nombre que me pasaron no este en la db
         //Si extensive es falso retorno error, si es cierto todavia tengo que intentar buscarlo en la api
         if(extensive === 'false'){
-            let error = `The specified pokemon may not exist, maybe you should try to set 'extensive=true' to search too in the db`;
+            let error = `The specified pokemon may not exist, maybe you should try to set 'extensive=true' to search in the pokeapi too`;
             error += `, the following error has ocurred: ${err.message}`;
-            return res.status(204).json(error);//Aca no devuelvo 404 porque se empieza a llenar la consola de errores y el fetch toma
-                                               //El 404 como exito asi que no lo puedo manejar con el catch
+            return res.status(404).json(error);
         }
-
         name = name.toLowerCase();
 
         try{
-            return await searchOnApi();
+            return await searchOnApi(link, res);
         }
         catch(err){
             return res.status(404).json('The specified pokemon may not exist, the following error has ocurred: '+err.message);
         }
     }
-
-    async function searchOnApi(){
-        let {data} = await axios.get(link);
-        
-        let pokemonFullInfo = {
-            name : data.name,
-            img: data.sprites.other.home.front_default,
-            types: data.types.map(types => {return types.type.name}),
-            id: data.id,
-            hp: data.stats[0].base_stat,
-            attack: data.stats[1].base_stat,
-            defense: data.stats[2].base_stat,
-            speed: data.stats[5].base_stat,
-            weight: data.weight,
-            height: data.height
-        };
-
-        return res.status(200).json(pokemonFullInfo);
-    }
-
-    async function searchOnDb(){
-        const dbPokemon = await pokemon.findAll({
-            where: {
-                name: name
-            },
-            attributes: ['name','img','id','hp','attack','defense','speed','weight','height'],
-            include: {
-                model: types,
-                attributes: ['name'],
-                through:{
-                    attributes: []
-                }
-            }
-        })
-
-        return res.status(200).json({
-            name: dbPokemon[0].dataValues.name,
-            img: dbPokemon[0].dataValues.img,
-            types: dbPokemon[0].dataValues.types.map(type => {return type.dataValues.name}),
-            id: dbPokemon[0].dataValues.id,
-            hp: dbPokemon[0].dataValues.hp, 
-            attack: dbPokemon[0].dataValues.attack,
-            defense: dbPokemon[0].dataValues.defense,
-            speed: dbPokemon[0].dataValues.speed,
-            weight: dbPokemon[0].dataValues.weight,
-            height: dbPokemon[0].dataValues.height,
-        })
-    }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res) => {//Esto crea un nuevo pokemon, verifica antes que no exista alguno con el mismo nombre en la api o db
 
     try{
         const {name, types, img, hp, attack, defense, speed, height, weight} = req.body;//Saco los parametros que vienen por body
@@ -164,10 +115,10 @@ router.post('/', async (req, res) => {
 
         try{
             //Intento buscar el nombre que me pasaron en la api y en la db
-            const nameVerification = await axios.get(`http://localhost:3000/pokemons?name=${name}`);
+            const nameVerification = await axios.get(`http://localhost:3000/pokemons?name=${name}&extensive=true`);
             return res.status(400).json('SequelizeUniqueConstraintError')//Si llego aca es porque ya existe alguien con el mismo nombre en la api o db, tiro error
         }
-        catch(err){}
+        catch(err){}//Aca no hago nada porque el error lo tira en el try y si llega al catch es que tuvo exito
        
         const createdPokemon  = await pokemon.create({//Creo el pokemon
             name: name,
@@ -189,17 +140,71 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {//This search a pokemon by id in the db and api
+    /* GET /pokemons/{idPokemon}:
+    Obtener el detalle de un pokemon en particular
+    Debe traer solo los datos pedidos en la ruta de detalle de pokemon
+    Tener en cuenta que tiene que funcionar tanto para un id de un pokemon existente en pokeapi o uno creado por ustedes */
+    const {id} = req.params;
+    const link = `https://pokeapi.co/api/v2/pokemon/${id}`;
+
+    try{
+        await searchOnApi(link, res);
+    }
+    catch(err){
+        try{
+            await searchOnDb({id: id}, res);
+        }
+        catch(err){
+            res.status(404).json(`The pokemon cannot be found, the following error has ocurred: ${err.message}`);
+        }
+    }
+})
+
+async function searchOnApi(link, res){//This search a pokemon in the api and return his full info
+    let {data} = await axios.get(link);
+    
+    let pokemonFullInfo = {
+        name : data.name,
+        img: data.sprites.other.home.front_default,
+        types: data.types.map(types => {return types.type.name}),
+        id: data.id,
+        hp: data.stats[0].base_stat,
+        attack: data.stats[1].base_stat,
+        defense: data.stats[2].base_stat,
+        speed: data.stats[5].base_stat,
+        weight: data.weight,
+        height: data.height
+    };
+
+    return res.status(200).json(pokemonFullInfo);
+}
+async function searchOnDb(condition, res){//This search a pokemon in the db and return his full info
+    const dbPokemon = await pokemon.findAll({
+        where: condition,
+        attributes: ['name','img','id','hp','attack','defense','speed','weight','height'],
+        include: {
+            model: types,
+            attributes: ['name'],
+            through:{
+                attributes: []
+            }
+        }
+    })
+
+    return res.status(200).json({
+        name: dbPokemon[0].dataValues.name,
+        img: dbPokemon[0].dataValues.img,
+        types: dbPokemon[0].dataValues.types.map(type => {return type.dataValues.name}),
+        id: dbPokemon[0].dataValues.id,
+        hp: dbPokemon[0].dataValues.hp, 
+        attack: dbPokemon[0].dataValues.attack,
+        defense: dbPokemon[0].dataValues.defense,
+        speed: dbPokemon[0].dataValues.speed,
+        weight: dbPokemon[0].dataValues.weight,
+        height: dbPokemon[0].dataValues.height,
+    })
+}
+
 module.exports = router;
 
-//IMPORANTE:
-
-//La variable {all} por ahora no tiene uso pero mas adelante, en caso de que sea true deberias traer y agregar al array result, los pokemons que tengas
-//Guardados en la base de datos, su valor defecto deberia ser TRUE
-
-//Documentacion
-
-//Esta ruta trae el nombre, tipo y imagen de pokemons.
-//Recibe por query los parametros {offset} {limit} y {all}
-//{offset indica desde que pokemon empezara la busqueda, por ejemplo si se le da un tres, ignorara los primeros 2 y empezara a traer a partir del 3cer pokemon} Su valor es 0 por default.
-//{limit} indica cuantos pokemons traera en total, si no se indica, su valor es 40 por default
-//{all} indica si debe traer solo los pokemons desde la api 'PokeApi' o si tambien debe traerlo desde la DB, su valor por defecto es TRUE
