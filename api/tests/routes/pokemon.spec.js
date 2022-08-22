@@ -6,7 +6,7 @@ const { pokemon, types, conn } = require('../../src/db.js');
 
 const agent = session(app);
 
-xdescribe('Pokemon routes', () => {
+describe('Pokemon routes', () => {
   before(() => conn.authenticate()
   .catch((err) => {
     console.error('Unable to connect to the database:', err);

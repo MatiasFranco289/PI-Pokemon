@@ -164,11 +164,15 @@ router.get('/:id', async (req, res) => {//This search a pokemon by id in the db 
 async function searchOnApi(link, res){//This search a pokemon in the api and return his full info
     let {data} = await axios.get(link);
     
+    //Esto de abajo es porque la api entrega el peso y altura en un formato raro
+    //Y tengo que pasarlo a metros y kg
     let normalizedWeight = data.weight.toString();
     let normalizedHeight = data.height.toString();
     normalizedWeight = normalizedWeight.slice(0,normalizedWeight.length-1) + '.' + normalizedWeight[normalizedWeight.length-1];
     normalizedHeight = normalizedHeight.slice(0, normalizedHeight.length-1) + '.' + normalizedHeight[normalizedHeight.length-1];
-
+    normalizedWeight = parseFloat(normalizedWeight);
+    normalizedHeight = parseFloat(normalizedHeight);
+    
     let pokemonFullInfo = {
         name : data.name,
         img: data.sprites.other.home.front_default,
@@ -197,10 +201,6 @@ async function searchOnDb(condition, res){//This search a pokemon in the db and 
         }
     })
 
-    let normalizedWeight = dbPokemon[0].dataValues.weight.toString();
-    let normalizedHeight = dbPokemon[0].dataValues.height.toString();
-    normalizedWeight = normalizedWeight.slice(0,normalizedWeight.length-1) + '.' + normalizedWeight[normalizedWeight.length-1];
-    normalizedHeight = normalizedHeight.slice(0, normalizedHeight.length-1) + '.' + normalizedHeight[normalizedHeight.length-1];
 
     return res.status(200).json({
         name: dbPokemon[0].dataValues.name,
@@ -211,8 +211,8 @@ async function searchOnDb(condition, res){//This search a pokemon in the db and 
         attack: dbPokemon[0].dataValues.attack,
         defense: dbPokemon[0].dataValues.defense,
         speed: dbPokemon[0].dataValues.speed,
-        weight: normalizedWeight,
-        height: normalizedHeight
+        weight: dbPokemon[0].dataValues.weight,
+        height: dbPokemon[0].dataValues.height
     })
 }
 

@@ -161,8 +161,8 @@ export default function Crear(){
                 attack: input.attack,
                 defense: input.defense,
                 speed: input.speed,
-                height: input.height*0.1,
-                weight: input.weight*10
+                height: (input.height*0.01).toFixed(2),
+                weight: input.weight
             }
 
             //Hago el post a la api con la info del formulario

@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true//No puede haber dos pokemons con el mismo nombre
+      unique: true,//No puede haber dos pokemons con el mismo nombre
     },
     img: {
       type: DataTypes.STRING,
