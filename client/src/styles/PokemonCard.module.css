@@ -55,4 +55,9 @@
     .mainWrapper{
         width: 200px;
     }
+
+    .imgContainer{
+        width: 200px;
+        height: 200px;
+    }
 }

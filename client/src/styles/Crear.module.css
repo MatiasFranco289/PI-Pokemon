@@ -146,6 +146,7 @@
     animation: appear;
     animation-duration: 1s;
     margin-top: 70px;
+    transition: 1s;
 }
 
 .exitBtn{
@@ -175,6 +176,7 @@
     top: -130px;
     animation: pikachuEnter;
     animation-duration: 1s;
+    transition: 1s;
 }
 
 @keyframes pikachuEnter{
@@ -189,41 +191,47 @@
     font-size: 1.1em;
 }
 
-.hint{
-    opacity: 0;
-    pointer-events: none;
+@media(max-width: 1200px){
+    .mainWrapper form{
+        width: 700px;
+    }
+
+    .titleContainer{
+        width: 700px;
+    }
+
+    .titleImg{
+        top: -100px;
+    }
 }
 
-.hint, .hint_active{
-    background-color: yellow;
-    position: fixed;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-weight: 700;
-    border-radius: 5px;
-    padding-left: 5px;
-    display: flex;
-    width: 300px;
-    box-shadow: 5px 5px 10px black;
-    transition: 1s;
+@media(max-width: 769px){
+    .mainWrapper form{
+        width: 450px;
+    }
+
+    .titleContainer{
+        width: 450px;
+    }
+
+    .titleImg{
+        top: -75px;
+        width: 40%;
+    }
 }
 
-.hint_active{
-    transform: translateY(-100%);
-    opacity: 1;
-}
+@media(max-width: 480px){
+    .mainWrapper form{
+        width: 250px;
+    }
 
-.hint_active button, .hint button{
-   width: 30px;
-   height: 30px;
-   border-style: none;
-   box-shadow: 0px 0px 5px black;
-   margin: 5px;
-   font-weight: 700;
-   background-color: white;
-}
+    .titleContainer{
+        width: 250px;
+    }
 
-.hint_active button:hover{
-    background-color: orangered;
-    color: white;
+    .titleImg{
+        top: -55px;
+        width: 60%;
+    }
 }
 

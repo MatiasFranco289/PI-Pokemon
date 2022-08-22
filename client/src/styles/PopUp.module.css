@@ -1,6 +1,6 @@
 .overlay_active, .overlay_inactive{
     background-color: rgba(255, 255, 255, .5);
-    width: 100%;
+    min-width: 100vw;
     min-height: 100vh;
     position: fixed;
     top: 0;
@@ -70,5 +70,12 @@
     color: white;
     background-color: orange;
     transition: .5s;
+}
+
+
+@media(max-width: 480px){
+    .popup_active, .popup_inactive{
+        width: 200px;
+    }
 }
 

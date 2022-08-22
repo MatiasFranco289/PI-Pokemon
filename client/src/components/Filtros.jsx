@@ -4,6 +4,7 @@ import styles from '../styles/Filtros.module.css';
 import {setOnlyOriginals, setTypeFilter} from '../actions/index.js';
 import { useNavigate } from "react-router-dom";
 import {addAttackInfo} from '../actions/index.js';
+const loadingGears = require('../imgs/LoadingGears.gif');
 
 export default function Filtros(props){
     const navigate = useNavigate();
@@ -64,7 +65,7 @@ export default function Filtros(props){
                     <h4>Order by</h4>
                 <div className = {styles.mainselection}>
                     <select defaultValue={props.order} onChange = {(e) => handleOrderChange(e)}>
-                        <option value="none">None</option>
+                        {props.order === 'none'?<option value="none">Select one</option>:null}
                         <option value = 'ORDER_ALPH_ASC'>Alphabetically ascending</option>
                         <option value = 'ORDER_ALPH_DESC'>Alphabetically descending</option>
                         <option value = 'ORDER_ATT_ASC'>By attack ascending</option>
@@ -80,6 +81,7 @@ export default function Filtros(props){
         return(
             <div className = {styles.filtrosMainWrapper_loading}>
                 <h2>Loading filters...</h2>
+                <img src = {loadingGears} alt="loadingGears"/>
             </div>
         );
     }

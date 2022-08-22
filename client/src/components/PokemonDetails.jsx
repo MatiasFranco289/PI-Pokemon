@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom';
 import styles from '../styles/PokemonDetails.module.css';
 import { useNavigate } from "react-router-dom";
 const loadingGif = require('../imgs/Loading.gif');
+const notFoundGif = require('../imgs/NotFound01.gif');
 
 export default function PokemonDetails(){
     const {name} = useParams();
@@ -14,8 +15,9 @@ export default function PokemonDetails(){
             let response;
 
             try{
-                response = await fetch(`http://localhost:3000/pokemons?name=${name}`)
+                response = await fetch(`http://localhost:3000/pokemons?name=${name}&extensive=true`)
                 .then(response => {
+                    console.log(`yee ${response.status}`)
                     if(response.status===404) throw new Error('404');
                     return response.json();
                 });
@@ -33,7 +35,7 @@ export default function PokemonDetails(){
                     setPokemonInfo(response);
                 }
                 catch(err){//Si queres a;adir una pagina de not found este es el lugar
-
+                    setPokemonInfo(404);
                 }
             }
         }
@@ -67,7 +69,7 @@ export default function PokemonDetails(){
                     </div>
 
                     <div>
-                        <h4>0.{pokemonInfo.height}m</h4>
+                        <h4>{pokemonInfo.height}m</h4>
                         <p>Height</p>
                     </div>
                 </div>
@@ -106,8 +108,15 @@ export default function PokemonDetails(){
                 </div>
             </div>
         </div>)
+    }
 
-        
+    function notFound(){
+        return (
+            <div className = {styles.loadingWrapper}>
+                <img src = {notFoundGif} alt="notFound.jpg"/>
+                <h1>The pokemon was not found.</h1>
+            </div>
+        );
     }
 
     return(
@@ -121,7 +130,7 @@ export default function PokemonDetails(){
                 <img src = {loadingGif} alt=""/>
                 <h1>Searching...</h1>
             </div>:
-            showPokemonInfo()}
+            pokemonInfo!==404?showPokemonInfo():notFound()}
         </div>
     )
 }

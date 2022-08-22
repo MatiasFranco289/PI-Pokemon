@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/Home.module.css";
 import Pokemons from './Pokemons';
 import NavigationBottomBar from './NavigationBottomBar';
-import {useParams, useNavigate} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import Buscador from './Buscador';
 import Filtros from './Filtros';
 import {getPokemons} from '../actions/index.js';//Esta son las acciones redux que defini
@@ -21,7 +21,6 @@ export default function Home(){
     page = (!page || isNaN(page))?0:page;//Si no se paso ningun param o el param pasado no es un numero, por defecto sera 0
     const dispatch = useDispatch();
     const store = useSelector(store => store);//Aca agarro la store entera
-    const dataLoaded = useRef(false);
     
     useEffect(() => {//Se corre solo una vez al cargar el elemento, pidiendo los pokemones si la store esta vacia
         if(!store.pokemons.length){
@@ -54,7 +53,13 @@ export default function Home(){
     }
 
     function sortPokemons(pkms){
-        let sortedPokemons = pkms;
+        let sortedPokemons = pkms.map(pokemon => {//Tengo que pasar la primera letra a mayuscula porque sin no ordena bien
+            let newName = pokemon.name;
+            newName = newName[0].toUpperCase() + newName.slice(1);
+            return {...pokemon, name: newName}
+        })
+
+        let originalNames = pkms.map(pokemon => pokemon.name);//Hago una copia de los nombres originales para una vez terminado el sorteo poder devolverlos como eran antes
 
         switch(store.order){
             case 'ORDER_ALPH_ASC':
@@ -71,7 +76,10 @@ export default function Home(){
             break;
         }
 
-        return sortedPokemons;
+        return sortedPokemons.map(pokemon => {
+            //Si el nombre esta contenido en nombres originales, lo devuelvo tal cual como esta, sino es porque fue modificado, asi que lo devuelvo en lower case
+            return originalNames.includes(pokemon.name)?pokemon:{...pokemon, name: pokemon.name.toLowerCase()}
+        })
 
         function OrderAlph(ArrObj, order, prop){//order [1,-1] es ascendente, order [-1,1] es descendente, esto ordena un objeto por la propiedad dada
             ArrObj.sort((a,b) => (a[prop] > b[prop])?order[0]:order[1]);
@@ -79,7 +87,9 @@ export default function Home(){
     }
 
     function filterByProcedency(pkms){
-        store.filters.originals && (pkms = pkms.filter(pokemon => pokemon.name[0] !== pokemon.name[0].toLowerCase()));
+        if(store.filters.originals){
+            pkms = pkms.filter(pokemon => pokemon.name[0] !== pokemon.name[0].toLowerCase())
+        }
         return pkms;
     }
 

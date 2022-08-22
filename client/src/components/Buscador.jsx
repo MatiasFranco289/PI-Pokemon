@@ -16,10 +16,15 @@ export default function Buscador(){
     }
 
     return(
-        <form className = {styles.buscadorWrapper} action="" method="get" onSubmit={(e) => manageSearch(e)}>
-            <Link to='/create'>TOCAMEEE</Link>
-            <input type="text" name="busqueda" required = {true}/>
-            <button type="submit">Buscar</button>
-        </form>
+        <div className = {styles.mainWrapper}>
+            <div className = {styles.navBar}>
+                <Link className = {styles.linkBtn} to = '/'>Home</Link>
+                <Link className = {styles.linkBtn} to = '/create'>Create</Link>
+            </div>
+            <form className = {styles.buscadorWrapper} action="" method="get" onSubmit={(e) => manageSearch(e)}>
+                <input type="text" name="busqueda" required = {true}/>
+                <button type="submit">Search</button>
+            </form>
+        </div>
     );
 }

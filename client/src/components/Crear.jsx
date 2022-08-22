@@ -100,14 +100,8 @@ export default function Crear(){
 
         function validateUrl(input, payload){
             let err = '';
-            var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-            !pattern.test(input.img) && (err = 'This should be a valid url.');
-            return '';
+            !/\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(input.img) && (err = 'This should be a valid img url.');;
+            return err;
         }
 
         function validateGenericAttr(input, payload){
@@ -134,24 +128,14 @@ export default function Crear(){
             setErrors({...errors, types: 'The pokemon must have at least 1 type.'});
         }
         else{//Si esta inactivo
-            if(input.types.length < 2){//Si el pokemon tiene menos de dos tipos
-                newTypes = input.types;
-                newTypes.push({id: e.target.id,name: e.target.name});
+            newTypes = input.types;
+            newTypes.push({id: e.target.id,name: e.target.name});
+            if(newTypes.length > 2) newTypes.shift();
                 
-                setInput({...input, types: newTypes});//Agrega el tipo
-                setErrors({...errors, types: ''});//Elimina errores
-            }
-            else{
-                setErrors({...errors, types: 'overTypes'});
-            }
+            setInput({...input, types: newTypes});//Agrega el tipo
+            setErrors({...errors, types: ''});//Elimina errores
         }
         
-    }
-
-    function closeHint(e){
-        e.preventDefault();
-        if(errors.types !== 'overTypes') return
-        setErrors({...errors, types: ''});
     }
 
     async function sendForm(e){
@@ -175,8 +159,8 @@ export default function Crear(){
                 attack: input.attack,
                 defense: input.defense,
                 speed: input.speed,
-                height: input.height,
-                weight: input.weight
+                height: input.height*0.1,
+                weight: input.weight*10
             }
 
             //Hago el post a la api con la info del formulario
@@ -265,10 +249,6 @@ export default function Crear(){
                         {errors.types && errors.types!=='overTypes' &&(
                             <p className = {styles.danger}>{errors.types}</p>
                         )}
-                        <div className = {errors.types!=='overTypes'?styles.hint:styles.hint_active}>
-                            <p>A pokemon cannot have more than 2 types!</p>
-                            <button onClick = {(e) => closeHint(e)}>X</button>
-                        </div>
                     </div>
 
                     <div className = {styles.section}>
@@ -317,7 +297,7 @@ export default function Crear(){
                 <div className = {styles.mainSection}>
                      <div className = {styles.section}>
                             <label htmlFor="height">Height</label>
-                            <input name = 'height' onChange = {(e) => handleChanges(e)} value = {input.height} type="text" id='height' placeholder = 'Height of the pokemon in cm'/>
+                            <input name = 'height' onChange = {(e) => handleChanges(e)} value = {input.height} type="text" id='height' placeholder = 'Height of the pokemon in cm Example: 170'/>
                             {errors.height && (
                                 <p className = {styles.danger}>{errors.height}</p>
                             )}
@@ -325,7 +305,7 @@ export default function Crear(){
 
                     <div className = {styles.section}>
                             <label htmlFor="speed">Weight</label>
-                            <input name = 'weight' onChange = {(e) => handleChanges(e)} value = {input.weight}type="text" id='weight' placeholder = 'Weight of the pokemon in kg'/>
+                            <input name = 'weight' onChange = {(e) => handleChanges(e)} value = {input.weight}type="text" id='weight' placeholder = 'Weight of the pokemon in kg.Example: 60'/>
                             {errors.weight && (
                                 <p className = {styles.danger}>{errors.weight}</p>
                             )}

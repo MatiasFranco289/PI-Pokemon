@@ -2,19 +2,33 @@
     width: 100%;
     text-align: center;
     color: white;
-}
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 5px 5px 10px black;
+    background-color: rgba(255,255,255,.2);
+} 
 
 .filtrosMainWrapper_active{
   animation: appear;
+  animation-duration:1s;
+}
+
+.filtrosMainWrapper_loading{
+  animation: appear2;
   animation-duration: 1s;
 }
 
 @keyframes appear{
-  from{opacity: 0;}
-  to{opacity: 1;}
+  from{opacity: 0;
+  transform: translateX(-100%);}
+  to{opacity: 1;
+  transform: translateX(0)}
 }
 
-
+@keyframes appear2{
+  from{opacity:0;}
+  to{opacity: 1;}
+}
 
 .filtersWrapperColumn, .filterWrapperRow{
     background-color: rgba(255,255,255,.2);
@@ -68,15 +82,9 @@
 .filterWrapperRow{
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
 
-.filtrosMainWrapper_active, .filtrosMainWrapper_loading h2{
-    background-color: rgba(255, 255, 255, .3);
-    border-radius: 4px;
-    padding: 10px;
-    box-shadow: 5px 5px 10px black;
-    background-color: rgba(255,255,255,.2);
-}
 
 .dropDown, .dropDown option{
   background-color: yellow;
@@ -135,6 +143,7 @@
   .slider_inactive, .slider_active{
     position: absolute;
     cursor: pointer;
+    width: 60px;
     border-radius: 34px;
     top: 0;
     left: 0;
@@ -168,3 +177,13 @@
   .slider_active:before{
     transform: translateX(-3px);
   }
+
+@media(max-width: 780px){
+  .filtersWrapperColumn, .filterWrapperRow{
+    flex-direction: column;
+  }
+
+  .filtersWrapperColumn, .filterWrapperRow h4{
+    font-size: 1.2em;
+  }
+}

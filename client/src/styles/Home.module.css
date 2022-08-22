@@ -32,3 +32,15 @@
 .filtersMain{
     width: 13%;
 }
+
+@media(max-width: 780px){
+    .homeMainContent{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .filtersMain{
+        width: 80%;
+        margin-bottom: 30px;
+    }
+}

@@ -82,8 +82,6 @@ router.get('/', async(req, res, next) => {
  router.get('/', async (req, res) => {//Esto es un buscador por nombre, recibe por query 'extensive' que en caso de ser true buscara en la api, sino, solo en la db
     let {name, extensive} = req.query;
 
-    const link = `https://pokeapi.co/api/v2/pokemon/${name}`;
-
     try{//Intenta buscar el pokemon en la db
         name = name[0].toUpperCase() + name.slice(1);
         return await searchOnDb({name: name}, res);
@@ -97,6 +95,7 @@ router.get('/', async(req, res, next) => {
             return res.status(404).json(error);
         }
         name = name.toLowerCase();
+        let link = `https://pokeapi.co/api/v2/pokemon/${name}`;
 
         try{
             return await searchOnApi(link, res);
@@ -119,7 +118,7 @@ router.post('/', async (req, res) => {//Esto crea un nuevo pokemon, verifica ant
             return res.status(400).json('SequelizeUniqueConstraintError')//Si llego aca es porque ya existe alguien con el mismo nombre en la api o db, tiro error
         }
         catch(err){}//Aca no hago nada porque el error lo tira en el try y si llega al catch es que tuvo exito
-       
+
         const createdPokemon  = await pokemon.create({//Creo el pokemon
             name: name,
             img: img,
@@ -164,6 +163,12 @@ router.get('/:id', async (req, res) => {//This search a pokemon by id in the db 
 async function searchOnApi(link, res){//This search a pokemon in the api and return his full info
     let {data} = await axios.get(link);
     
+    let normalizedWeight = data.weight.toString();
+    let normalizedHeight = data.height.toString();
+    normalizedWeight = normalizedWeight.slice(0,normalizedWeight.length-1) + '.' + normalizedWeight[normalizedWeight.length-1];
+    normalizedHeight = normalizedHeight.slice(0, normalizedHeight.length-1) + '.' + normalizedHeight[normalizedHeight.length-1];
+
+    console.log(data.height);
     let pokemonFullInfo = {
         name : data.name,
         img: data.sprites.other.home.front_default,
@@ -173,8 +178,8 @@ async function searchOnApi(link, res){//This search a pokemon in the api and ret
         attack: data.stats[1].base_stat,
         defense: data.stats[2].base_stat,
         speed: data.stats[5].base_stat,
-        weight: data.weight,
-        height: data.height
+        weight: normalizedWeight,
+        height: normalizedHeight
     };
 
     return res.status(200).json(pokemonFullInfo);
@@ -192,6 +197,11 @@ async function searchOnDb(condition, res){//This search a pokemon in the db and 
         }
     })
 
+    let normalizedWeight = dbPokemon[0].dataValues.weight.toString();
+    let normalizedHeight = dbPokemon[0].dataValues.height.toString();
+    normalizedWeight = normalizedWeight.slice(0,normalizedWeight.length-1) + '.' + normalizedWeight[normalizedWeight.length-1];
+    normalizedHeight = normalizedHeight.slice(0, normalizedHeight.length-1) + '.' + normalizedHeight[normalizedHeight.length-1];
+
     return res.status(200).json({
         name: dbPokemon[0].dataValues.name,
         img: dbPokemon[0].dataValues.img,
@@ -201,8 +211,8 @@ async function searchOnDb(condition, res){//This search a pokemon in the db and 
         attack: dbPokemon[0].dataValues.attack,
         defense: dbPokemon[0].dataValues.defense,
         speed: dbPokemon[0].dataValues.speed,
-        weight: dbPokemon[0].dataValues.weight,
-        height: dbPokemon[0].dataValues.height,
+        weight: normalizedWeight,
+        height: normalizedHeight
     })
 }
 
