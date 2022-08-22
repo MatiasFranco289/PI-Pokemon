@@ -15,7 +15,7 @@ router.get('/', async (req, res, next) => {//Esto obtienes los datos de api poke
                 [sequelize.fn('COUNT', sequelize.col('id')), 'types_count']
             ]
         });
-        
+
 
         if(parseInt(tableLength[0].dataValues.types_count)) return next();//Si tengo los datos en la db lo manejo en otro endpoint
 

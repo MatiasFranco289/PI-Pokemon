@@ -40,7 +40,7 @@ module.exports = (sequelize) => {
     },
     weight: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      defaultValue: 100
     }
   }, {
 		timestamps: false

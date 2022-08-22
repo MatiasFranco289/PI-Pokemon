@@ -1,7 +1,6 @@
 import React from "react";
 import PokemonCard from "./PokemonCard.jsx";
 import styles from '../styles/Pokemons.module.css';
-import { useNavigate } from "react-router-dom";
 const notFound = require('../imgs/NotFound02.png')
 
 export default function Pokemons(props){

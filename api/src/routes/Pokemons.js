@@ -20,8 +20,8 @@ router.get('/', async(req, res, next) => {
             required: true,
             attributes: ['name'],
             through: {
-            attributes: []
-        }
+                attributes: []
+            }
         }
         })
         .then(data => {//Cuando esta promesa se resolvio
@@ -33,6 +33,7 @@ router.get('/', async(req, res, next) => {
                 }
             })
 
+           
             if(result.length){//Si results es diferente a un array vacio es porque ya termino de pedir los pokemons a la api
                 result = result.concat(dbPokemons);//Por lo tanto concateno el resultado de esta promesa con el resultado de la api
                 return res.status(200).json(result);//Y envio todo
@@ -168,7 +169,6 @@ async function searchOnApi(link, res){//This search a pokemon in the api and ret
     normalizedWeight = normalizedWeight.slice(0,normalizedWeight.length-1) + '.' + normalizedWeight[normalizedWeight.length-1];
     normalizedHeight = normalizedHeight.slice(0, normalizedHeight.length-1) + '.' + normalizedHeight[normalizedHeight.length-1];
 
-    console.log(data.height);
     let pokemonFullInfo = {
         name : data.name,
         img: data.sprites.other.home.front_default,

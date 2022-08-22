@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles/Home.module.css";
 import Pokemons from './Pokemons';

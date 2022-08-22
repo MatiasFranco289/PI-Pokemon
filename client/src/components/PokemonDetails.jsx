@@ -17,7 +17,6 @@ export default function PokemonDetails(){
             try{
                 response = await fetch(`http://localhost:3000/pokemons?name=${name}&extensive=true`)
                 .then(response => {
-                    console.log(`yee ${response.status}`)
                     if(response.status===404) throw new Error('404');
                     return response.json();
                 });

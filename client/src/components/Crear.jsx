@@ -5,9 +5,11 @@ import popUpStyles from '../styles/PopUp.module.css'
 import {useDispatch} from 'react-redux';
 import {createPokemon} from '../actions/index.js';
 const titleImg = require('../imgs/SeatedPikachu.png')
+const loadingGears = require('../imgs/LoadingGears.gif')
 
 export default function Crear(){
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
     const [types, setTypes] = useState();
     const [input, setInput] = useState({
         name: '',
@@ -164,12 +166,16 @@ export default function Crear(){
             }
 
             //Hago el post a la api con la info del formulario
+            setLoading(true);
             await fetch('http://localhost:3000/pokemons', {
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(requestBody)
             })
-            .then(data => data.json())
+            .then(data => {
+                setLoading(false);
+                return data.json();
+            })
             .then(res => {
                 if(res === 'Ok!'){
                     setPopUp({
@@ -193,6 +199,14 @@ export default function Crear(){
                     });
                 }
             })
+            .catch(err => {
+                setLoading(false);
+                setPopUp({
+                    title: 'Error!',
+                    info: 'An unexpected error has ocurred, check the console for more info.'
+                })
+                console.error(err.message);
+            })
         }
     }
 
@@ -205,7 +219,6 @@ export default function Crear(){
 
     return(
         <div className = {styles.mainWrapper}>
-
             <div className = {popUp.title?popUpStyles.overlay_active:popUpStyles.overlay_inactive}>
                 <div className = {popUp.title?popUpStyles.popup_active:popUpStyles.popup_inactive}>
                     <div className = {popUpStyles.titleSection}>
@@ -312,7 +325,7 @@ export default function Crear(){
                     </div>
                 </div>
                 
-                <button type="submit" className = {styles.createBtn}>Create!</button>
+                {!loading?<button type="submit" className = {styles.createBtn}>Create!</button>:<img src = {loadingGears}></img>}
             </form>
         </div>
     );
