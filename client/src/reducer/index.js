@@ -38,7 +38,7 @@ export default function rootReducer(state = initialState, action){
 
             action.payload.types.forEach(newType => {//Por cada tipo que hayan mandado en el payload
                 if(!state.types.includes(newType)){//Si no esta incluido en ${types} en la store
-                    newStateType.push(newType);
+                    newStateType.push(newType[0].toUpperCase() + newType.slice(1));
                 }
             })
             newStatePokemons.push(action.payload);

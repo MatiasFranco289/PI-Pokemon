@@ -42,7 +42,6 @@ export default function Filtros(props){
             <h2>Filters</h2>
             <div className = {styles.filtersWrapperColumn}>
                 <h4>Tipos</h4>
-
                 <div className = {styles.typesContainer}>
                     {props.types.map((type, index) => {
                         return <button className = {props.filters.types.includes(type)?styles.typesBtn_active:styles.typesBtn_inactive} name = {type} key = {`btnFltr${index}`} onClick={(e) => handleTypeFilter(e)}>

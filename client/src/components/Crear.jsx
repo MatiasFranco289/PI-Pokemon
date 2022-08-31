@@ -183,7 +183,7 @@ export default function Crear(){
                         info: 'Your Pokemon has been successfully created!'
                     })
                 
-                dispatch(createPokemon(normalizedName, input.img, input.types.map(type => type.name)));
+                dispatch(createPokemon(normalizedName, input.img, input.types.map(type => type.name.toLowerCase())));
 
                 }
                 else if(res === 'SequelizeUniqueConstraintError'){

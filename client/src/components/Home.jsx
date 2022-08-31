@@ -29,7 +29,6 @@ export default function Home(){
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
-
     function loadingScreen(){
         return(
             <div className = {styles.homeLoading}>
@@ -42,7 +41,7 @@ export default function Home(){
     function filterByType(pkms){
         if(store.filters.types.length){
             let types = store.filters.types;
-            
+
             types.forEach(type => {
                 type = type.toLowerCase();
                 pkms = pkms.filter(pokemon => pokemon.types.includes(type));
