@@ -23,15 +23,15 @@ export default function Crear(){
         weight: ''
     });
     const [errors, setErrors] = useState({
-        name: 'The name must have at least 3 letters.',
-        img: 'This should be a valid url.',
-        hp: 'This field cannot be empty.',
-        attack: 'This field cannot be empty.',
-        defense: 'This field cannot be empty.',
-        speed: 'This field cannot be empty.',
-        height: 'This field cannot be empty.',
-        weight: 'This field cannot be empty.',
-        types: 'The pokemon must have at least 1 type.'
+        name: '',
+        img: '',
+        hp: '',
+        attack: '',
+        defense: '',
+        speed: '',
+        height: '',
+        weight: '',
+        types: ''
     });
     const [popUp, setPopUp] = useState({
         title: '',
