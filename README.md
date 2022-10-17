@@ -38,9 +38,9 @@ Si no encontraste lo que buscabas tambien contras con una pagina de creacion, do
 
 ## Para levantar la pagina de forma local
 1. Dentro de la carpeta api, crear un archivo .env con el siguiente formato:
--__DB_USER = "YOUR_POSTGRES_USER"__
--__DB_PASSWORD = "YOUR_POSTGRES_PASS"__
--__DB_HOST = "localhost"__
+__DB_USER = "YOUR_POSTGRES_USER"__
+__DB_PASSWORD = "YOUR_POSTGRES_PASS"__
+__DB_HOST = "localhost"__
 2. Deberas crear tambien una base de datos usando postgres llamada "pokemon".
 2. Abrir una consola en la carpeta api y escribir los comandos "npm i" seguido de "npm start".
 3. Abrir una consola en la carpeta client y escribir "npm i" seguido de "npm start".
