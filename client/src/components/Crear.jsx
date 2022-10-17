@@ -142,8 +142,13 @@ export default function Crear(){
 
     async function sendForm(e){
         e.preventDefault();
+
+        const fieldIds = ['name','img','hp','attack','defense','speed','height','weight'];
         
-        if(Object.values(errors).some(element => element!=='')){//Convierto errors en un array y lo recorro para ver si hay algun error
+        if(Object.values(errors).some(element => element!=='') || 
+        fieldIds.some(element => e.target[element].value.length === 0)
+        || !input.types.length){//Convierto errors en un array y lo recorro para ver si hay algun error
+
             //Manejar errores aca
             setPopUp({
                 title: 'Error!',
