@@ -8,6 +8,10 @@
 <a href='http://pokemon289.herokuapp.com'>http://pokemon289.herokuapp.com</a>
 </h1>
 
+<h1>Video:
+<a href='https://www.youtube.com/watch?v=SKm7kD9jIcI'>https://www.youtube.com/watch?v=SKm7kD9jIcI</a>
+</h1>
+
 
 ## Objetivos del Proyecto
 
@@ -64,5 +68,3 @@ __DB_HOST = "localhost"__
 
 #
 <img height="300" src="./imgs/06.png" />
-
-[![Watch the video](https://i.imgur.com/vKb2F1B.png)](https://www.youtube.com/watch?v=SKm7kD9jIcI)
