@@ -65,4 +65,4 @@ __DB_HOST = "localhost"__
 #
 <img height="300" src="./imgs/06.png" />
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/SKm7kD9jIcI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Watch the video](https://i.imgur.com/vKb2F1B.png)](https://www.youtube.com/watch?v=SKm7kD9jIcI)
